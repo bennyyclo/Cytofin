@@ -1,0 +1,24 @@
+Package: cytofin
+Title: An R package for CyTOF data integration
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Ben",
+           family = "Lo",
+           role = c("aut", "cre"),
+           email = "bennylo@stanford.edu",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: R package for Cytof data integration.
+License: `use_mit_license()`
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
+Imports:
+	readxl,
+	stringr,
+	tidyr,
+	flowCore
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
