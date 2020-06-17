@@ -10,6 +10,3 @@ Cytofin provided three functions for Cytof data integration:
 2. anprep-this generate reference anchors from anchors identified from each plate (batch).
 3. annorm-this function performed signal normalization using transformation function based on the anchor from anprep.
 
-Inputs:
-
-file:///tmp/mozilla_ben0/Slide1-4.TIF
