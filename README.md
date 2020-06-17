@@ -12,7 +12,4 @@ Cytofin provided three functions for Cytof data integration:
 
 Inputs:
 
-<p align="center">
-  <img src="./images/Slide1.TIF" width="350" title="hover text">
-</p>
-
+file:///tmp/mozilla_ben0/Slide1-4.TIF
