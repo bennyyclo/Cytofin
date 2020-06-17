@@ -12,6 +12,7 @@ Cytofin provided three functions for Cytof data integration:
 
 Inputs:
 
-
-![Alt text](./images/Slide1.TIF?raw=true "Title")
+<p align="center">
+  <img src="./images/Slide1.TIF" width="350" title="hover text">
+</p>
 
