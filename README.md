@@ -10,6 +10,8 @@ Cytofin provided three functions for Cytof data integration:
 2. anprep-this generate reference anchors from anchors identified from each plate (batch).
 3. annorm-this function performed signal normalization using transformation function based on the anchor from anprep.
 
+# Homogenize
 
 ![Alt text](./images/Slide1.png?raw=true "Title")
 
+The homognize function take a user input antigen panel table, which include standardized antigen name and associated antigen search pattern. Given two Cytof files with distinct antigen naming, the program perform a regular expression search to match the synomymous term in the panel and correct the antigen name with standardized name in the panel.  
