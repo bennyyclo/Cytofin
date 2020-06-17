@@ -22,5 +22,5 @@ annorm(
 normalized files with specified panel
 }
 \description{
-This function normalize CyTOF data panel.
+This function normalize CyTOF data panel using external anchors.
 }

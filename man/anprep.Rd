@@ -4,10 +4,10 @@
 \alias{anprep}
 \title{Prep CyTOF control for normalization}
 \usage{
-anprep(metadata_filename, panel_filename, input_file_dir, output_file_dir)
+anprep(metadata_filename, panel_filename, input_file_dir)
 }
 \arguments{
-\item{metadata_filename}{panel_filename input_file_dir output_file_dir}
+\item{metadata_filename}{panel_filename input_file_dir}
 }
 \value{
 data of summary statistics and concatenated control file

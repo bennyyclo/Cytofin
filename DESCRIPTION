@@ -1,5 +1,5 @@
 Package: cytofin
-Title: An R package for CyTOF data integration
+Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Ben",
@@ -7,18 +7,17 @@ Authors@R:
            role = c("aut", "cre"),
            email = "bennylo@stanford.edu",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: R package for Cytof data integration.
+Description: Cytofin: an R package for Cytof data integration.
 License: `use_mit_license()`
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
 Imports:
+	flowCore,
 	readxl,
 	stringr,
 	tidyr,
-	flowCore
-Suggests: 
-    knitr,
-    rmarkdown
-VignetteBuilder: knitr
+	reshape2,
+	ggplot2
+

@@ -1,12 +1,12 @@
 #' Normalize CyTOF data panel
 #'
-#' This function normalize CyTOF data panel.
+#' This function normalize CyTOF data panel using external anchors.
 #'
 #' @param control_metadata_filename, control_data_filename, sample_metadata_filename, panel_filename, input_file_dir, val_file_dir,output_file_dir, mode
 #' @return normalized files with specified panel
 #' @export
 
-annorm <- function(control_metadata_filename, control_data_filename, sample_metadata_filename, panel_filename, input_file_dir, val_file_dir,output_file_dir, mode){
+annorm <- function(control_metadata_filename, control_data_filename, sample_metadata_filename, panel_filename, input_file_dir, val_file_dir="none" ,output_file_dir, mode){
 dir.create(output_file_dir)
 #read metadata table
 getExtension <- function(file){ 
@@ -119,7 +119,7 @@ norm <- norm_5
 
 for (i in 1:length(md$filename)){
 #calculate adjustment parameters from control plate
-i=1
+#i=1
 cat(md$filename[i], "\n")
 filename_ctr <- md_control$filename[which((md_control$plate_number==md$plate_number[i])&(md_control$cohort==md$cohort[i]))]
 fcs <- flowCore::read.flowSet(paste0(input_file_dir,"homogenized_",filename_ctr), transformation = FALSE, truncate_max_range = FALSE)
@@ -132,6 +132,7 @@ mean_ctr <- apply(expr_ctr, 2, mean)
 mean_ctr_mean <- mean(mean_ctr)
 var_ctr <- apply(expr_ctr, 2, var)
 var_ctr_mean <- mean(var_ctr)
+markername <- flowCore::pData(flowCore::parameters(fcs[[1]]))$desc
 
 #normalize the control plate
 expr_ctr_norm <- t(flowCore::fsApply(fcs_asinh, function(x) apply(x, 1, norm), use.exprs=TRUE))
@@ -168,6 +169,7 @@ fcs_name <- paste0(output_file_dir,"normalized_",filename)
 flowCore::write.FCS(fcs_asinh_rev, fcs_name)
 
 #compare to validation
+if (val_file_dir != "none"){
 filename_val <- md$validation[i]
 fcs <- flowCore::read.flowSet(paste0(val_file_dir,filename_val), transformation = FALSE, truncate_max_range = FALSE)
 asinhNik <- flowCore::arcsinhTransform(a=0,b=0.2)
@@ -179,6 +181,10 @@ mean_val <- apply(expr_val, 2, mean)
 var_val <- apply(expr_val, 2, var)
 mean_val_mean <- mean(mean_val)
 var_val_mean <- mean(var_val)
+
+write.csv(data.frame(markername, mean_norm[all_markers], mean_val[all_markers]), paste0(output_file_dir,"rmsd_",filename,".csv"))
+}
+
 
 #visualize antigen panel comparing universal vs plate
 par(mfrow=c(2,4))
@@ -209,9 +215,14 @@ plot(mean_b4norm[all_markers], col='green', xlab='antigen', ylab='overlay expres
 par(new=TRUE)
 plot(mean_norm[all_markers], col='darkgreen', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
 par(new=TRUE)
+legend(1,10,legend=c("original", "normalized"), col=c("green", "darkgreen"), lty=1:2, cex=0.8)
+
+if (val_file_dir != "none"){
+par(new=TRUE)
 plot(mean_val[all_markers], col='purple', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
 par(new=TRUE)
 legend(1,10,legend=c("original", "normalized", "validation"),col=c("green", "darkgreen", "purple"), lty=1:2, cex=0.8)
+}
 
 #expression (std)
 #plot 5
@@ -237,8 +248,15 @@ plot(sqrt(var_b4norm[all_markers]), col='green', xlab='antigen', ylab='overlay e
 par(new=TRUE)
 plot(sqrt(var_norm[all_markers]), col='darkgreen', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
 par(new=TRUE)
+legend(1,10,legend=c("original", "normalized"), col=c("green", "darkgreen"), lty=1:2, cex=0.8)
+
+if (val_file_dir != "none"){
+par(new=TRUE)
 plot(var_val[all_markers], col='purple', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
 par(new=TRUE)
 legend(1,10,legend=c("original", "normalized", "validation"), col=c("green", "darkgreen", "purple"), lty=1:2, cex=0.8)
+}
+
+
 }
 }

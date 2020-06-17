@@ -2,11 +2,11 @@
 #'
 #' This function establish control reference for CyTOF data normalization.
 #'
-#' @param metadata_filename panel_filename input_file_dir output_file_dir
+#' @param metadata_filename panel_filename input_file_dir
 #' @return data of summary statistics and concatenated control file
 #' @export
 
-anprep <- function(metadata_filename, panel_filename, input_file_dir, output_file_dir){
+anprep <- function(metadata_filename, panel_filename, input_file_dir){
 
 #read metadata table
 getExtension <- function(file){ 
@@ -48,17 +48,17 @@ var_uni <- apply(expr, 2, var)
 var_uni_mean <- mean(var_uni[all_markers])
 mean_uni_mean <- mean(mean_uni[all_markers])
 
-save(var_uni, mean_uni, var_uni_mean, mean_uni_mean, file=paste0(output_file_dir,"Prep_control.RData"))
+save(var_uni, mean_uni, var_uni_mean, mean_uni_mean, file=paste0("Prep_control.RData"))
 
 gc()
-filename <- paste0(output_file_dir, "concatenated_control.fcs")
+filename <- paste0("concatenated_control.fcs")
 ff <- flowCore::flowFrame(expr)
 data_panel_name <- flowCore::pData(flowCore::parameters(fcs_control[[1]]))$desc
 flowCore::pData(flowCore::parameters(ff))$desc <- data_panel_name  
 flowCore::write.FCS(ff, filename)
 
 gc()
-filename <- paste0(output_file_dir, "concatenated_control_untransformed.fcs")
+filename <- paste0("concatenated_control_untransformed.fcs")
 ff <- flowCore::flowFrame(expr_untransformed)
 data_panel_name <- flowCore::pData(flowCore::parameters(fcs_control[[1]]))$desc
 flowCore::pData(flowCore::parameters(ff))$desc <- data_panel_name  
