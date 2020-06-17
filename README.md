@@ -14,11 +14,21 @@ Cytofin provided three functions for Cytof data integration:
 
 ![Alt text](./images/Slide1.png?raw=true "Title")
 
-The homognize function take a user input antigen panel table, which include standardized antigen name and associated antigen search pattern. Given two Cytof files with distinct antigen naming, the program perform a regular expression search to match the synomymous term in the panel and correct the antigen name with standardized name in the panel.  
+Requred Input: raw CyTOF files (.fcs), standardized antigen panel table file (.xlsx/.csv), metadata table (.xlsx/.csv) 
+Output: The homognize function take a user input antigen panel table, which include standardized antigen name and associated antigen search pattern. Given two Cytof files with distinct antigen naming, the program perform a regular expression search to match the synomymous term in the panel and correct the antigen name with standardized name in the panel. The output of this function is homogenized CyTOF file with user defined channel defined by the standardized antigen table.  
 
 2. CyTOF data normalization
 
 ![Alt text](./images/Slide2.png?raw=true "Title")
+
+The normalization include two steps: 1. preparation of external anchors and 2. application of transformation function.
+
+1. Anchors preparation:
+
+Requred Input: homogenized CyTOF files (.fcs), and anchor table file (.xlsx/.csv).
+Output: the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. The values will be store in the RData object. The function also outputs the concatenated FCS files.
+
+
 
 
 
