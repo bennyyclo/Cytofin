@@ -54,7 +54,7 @@ Input:
 ```input_file_dir```: folder directory containing output data.
 
 
-Output: the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. The values will be store in the RData object. The function also outputs the concatenated anchor FCS files.
+Output: the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. The values will be stored in an RData object. The function also outputs the concatenated anchor FCS files.
 
 2. Data Transformation:
 
