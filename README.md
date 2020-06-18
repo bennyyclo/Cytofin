@@ -44,6 +44,9 @@ The external anchor normalization includes: 1. preparation of external anchors a
 
 1. Anchors preparation:
 
+Description: 
+The anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. 
+
 Function definition: 
 
 ```anprep(metadata_filename, panel_filename, input_file_dir)```
@@ -57,7 +60,7 @@ Input:
 ```input_file_dir```: folder directory containing output data.
 
 
-Output: the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. The values will be stored in an RData object. The function also outputs the concatenated anchor FCS files.
+Output: the anprep function generates an RData object containig reference statistics. The function also outputs the concatenated anchor FCS files.
 
 2. Data Transformation:
 
