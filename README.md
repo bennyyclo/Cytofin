@@ -25,9 +25,9 @@ Input:
 
 ```panel_filename```: standardized antigen panel table file (.xlsx/.csv)(must be in the current directory)
 
-```input_file_dir```: folder directory containing input raw CyTOF files
+```input_file_dir```: folder directory containing input homogenized CyTOF files
 
-```output_file_dir```: folder directory of output CyTOF files
+```output_file_dir```: folder directory containing output files
 
 Output: The homognize function take a user input antigen panel table, which include standardized antigen name and associated antigen search pattern. Given two Cytof files with distinct antigen naming, the program perform a regular expression search to match the synomymous term in the panel and correct the antigen name with standardized name in the panel.This function generated homogenized CyTOF file with user defined channel defined by the standardized antigen table.  
 
@@ -47,7 +47,7 @@ Function definition:
 
 Input: 
 
-```metadata_filename```: this is the anchor table filename of homogenized CyTOF files (.fcs)(must be in the current directory).
+```metadata_filename```: metadata table of anchor CyTOF files (.fcs)(must be in the current directory).
 
 ```panel_filename```: this is the standarized antigen paenl filename(.xlsx/.csv)(must be in the current directory).
 
