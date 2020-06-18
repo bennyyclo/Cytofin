@@ -29,6 +29,7 @@ External anchor normalization:
 1. Anchors preparation:
 
 Requred Input: homogenized CyTOF files (.fcs), metadata table file (.xlsx/.csv), and anchor table file (.xlsx/.csv).
+
 Output: the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. The values will be store in the RData object. The function also outputs the concatenated anchor FCS files.
 
 2. Data Transformation:
@@ -40,11 +41,12 @@ Output: the annorm function applied different transformation functions (modes) t
 Internal anchor normalization:
 
 Input: homogenized CyTOF files (.fcs), validation CyTOF files (.fcs, optional),metadata table file (.xlsx/.csv).
-Output:In the event that the external references are not available, internal anchors can be used. Here, we estimated channels stability using a PCA-based non-redundnacy score. A minimal of three channels should be selected to establish an internal refernece from which signal can be calibrated between CyTOF files.
+
+Output:In the event that the external references are not available, internal anchors can be used. Here, we identifed the most stable channels as internal anchors using a PCA-based non-redundnacy score. A minimal of three channels should be selected to establish an internal refernece from which signal can be calibrated between CyTOF files.
 
 #Computational Pipeline for CyTOF data integration
 
-Demo:Below is an example Rscript for CyTOF data inegration using Cytofin package.
+Below is an demo Rscript using Cytofin package for CyTOF data integration.
 
 ```{r}
 #import cytofin R package
