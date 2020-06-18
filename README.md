@@ -15,6 +15,8 @@ Cytofin provided three functions for Cytof data integration:
 
 ![Alt text](./images/Slide1.png?raw=true "Title")
 
+Function Definition: _homogenize(metadata_filename, panel_filename, input_file_dir, output_file_dir)_
+
 Requred Input: raw CyTOF files (.fcs), standardized antigen panel table file (.xlsx/.csv), metadata table (.xlsx/.csv). 
 Output: The homognize function take a user input antigen panel table, which include standardized antigen name and associated antigen search pattern. Given two Cytof files with distinct antigen naming, the program perform a regular expression search to match the synomymous term in the panel and correct the antigen name with standardized name in the panel. The output of this function is homogenized CyTOF file with user defined channel defined by the standardized antigen table.  
 
