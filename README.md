@@ -87,9 +87,20 @@ Internal anchor normalization:
 
 Function definition:
 
+```annorm_nrs(sample_metadata_filename, panel_filename, input_file_dir, val_file_dir="none", output_file_dir, nchannels)```
 
+Input: 
 
-Input: homogenized CyTOF files (.fcs), validation CyTOF files (.fcs, optional),metadata table file (.xlsx/.csv).
+```sample_meta_filename```: metadata table of homogenized CyTOF files (.fcs)(must be in the current directory).
+
+```panel_filename```: standardized antigen panel table file (.xlsx/.csv)(must be in the current directory).
+
+```val_file_dir```: folder directory containing validation homogenized CyTOF data file (optional).
+
+```output_file_dir```: folder directory containing output normalized CyTOF data file.
+
+```nchannels```: number of stabilized channels used for normalization.
+
 
 Output:In the event that the external references are not available, internal anchors can be used. Here, we identifed the most stable channels as internal anchors using a PCA-based non-redundnacy score. A minimal of three channels should be selected to establish an internal refernece from which signal can be calibrated between CyTOF files.
 
