@@ -28,6 +28,8 @@ External anchor normalization:
 
 1. Anchors preparation:
 
+Function definition: _anprep(metadata_filename, panel_filename, input_file_dir)_
+
 Requred Input: homogenized CyTOF files (.fcs), metadata table file (.xlsx/.csv), and anchor table file (.xlsx/.csv).
 
 Output: the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. The values will be store in the RData object. The function also outputs the concatenated anchor FCS files.
