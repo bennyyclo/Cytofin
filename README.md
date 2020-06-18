@@ -21,11 +21,11 @@ Function Definition:
 
 Input: 
 
-```metadata_file```: metadata table of raw CyTOF files (.fcs)
+```metadata_file```: metadata table of raw CyTOF files (.fcs)(must be in the current directory)
 
-```panel_filename```: standardized antigen panel table file (.xlsx/.csv)
+```panel_filename```: standardized antigen panel table file (.xlsx/.csv)(must be in the current directory)
 
-```input_file_dir```: folder directory of input raw CyTOF files
+```input_file_dir```: folder directory containing input raw CyTOF files
 
 ```output_file_dir```: folder directory of output CyTOF files
 
