@@ -11,7 +11,7 @@ Cytofin provided three functions for Cytof data integration:
 3. annorm-this function performs signal normalization using transformation function based on the anchor from anprep.
 4. annorm_nrs-this function performs signal normalization using stabilized channels as internal anchors. 
 
-*CyTOF data homogenization*
+**CyTOF data homogenization**
 
 ![Alt text](./images/Slide1.png?raw=true "Title")
 
@@ -21,7 +21,7 @@ Input: raw CyTOF files (.fcs), standardized antigen panel table file (.xlsx/.csv
 
 Output: The homognize function take a user input antigen panel table, which include standardized antigen name and associated antigen search pattern. Given two Cytof files with distinct antigen naming, the program perform a regular expression search to match the synomymous term in the panel and correct the antigen name with standardized name in the panel.This function generated homogenized CyTOF file with user defined channel defined by the standardized antigen table.  
 
-2. CyTOF data normalization
+**CyTOF data normalization**
 
 ![Alt text](./images/Slide2.PNG?raw=true "Title")
 
