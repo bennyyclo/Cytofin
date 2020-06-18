@@ -20,7 +20,7 @@ Output: The homognize function take a user input antigen panel table, which incl
 
 2. CyTOF data normalization
 
-![Alt text](./images/Slide2.png?raw=true "Title")
+![Alt text](./images/Slide2.PNG?raw=true "Title")
 
 The normalization include two steps: 1. preparation of external anchors and 2. application of transformation function.
 
