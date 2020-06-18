@@ -52,7 +52,7 @@ Below is an demo Rscript using Cytofin package for CyTOF data integration.
 #import cytofin R package
 library(cytofin)
 
-#homogenization antigen panel
+#homogenization antigen panel, use the demo data supplied with the package
 metadata_filename <- paste0(path.package("cytofin"),"/extdata/test_metadata_raw.csv")
 panel_filename <- paste0(path.package("cytofin"),"/extdata/test_panel.csv")
 input_file_dir <- paste0(path.package("cytofin"),"/extdata/test_raw_fcs_files/")
@@ -60,7 +60,7 @@ output_file_dir <- "out_test/"
 homogenize(metadata_filename, panel_filename, input_file_dir, output_file_dir)
 
 #prep external anchor 
-anchor_metadata_filename <- paste0(path.package("cytofin"),"/extdata/test_anchor_metadata_raw.csv") #use the demo anchor file table
+anchor_metadata_filename <- paste0(path.package("cytofin"),"/extdata/test_anchor_metadata_raw.csv")
 input_file_dir <- output_file_dir #use the homogenized files
 anprep(anchor_metadata_filename, panel_filename, input_file_dir)
 
