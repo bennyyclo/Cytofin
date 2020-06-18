@@ -50,10 +50,10 @@ Demo:Below is an example Rscript for CyTOF data inegration using Cytofin package
 library(cytofin)
 
 #homogenization antigen panel
-metadata_filename <- paste0(path.package("cytofin"),"/extdata/test_metadata_raw.csv") #use the demo metadata table
-panel_filename <- paste0(path.package("cytofin"),"/extdata/test_panel.csv") #use the demo antigen panel table 
-input_file_dir <- paste0(path.package("cytofin"),"/extdata/test_raw_fcs_files/") #use the demo raw CyTOF files
-output_file_dir <- "out_test/" #specify output directory
+metadata_filename <- paste0(path.package("cytofin"),"/extdata/test_metadata_raw.csv")
+panel_filename <- paste0(path.package("cytofin"),"/extdata/test_panel.csv")
+input_file_dir <- paste0(path.package("cytofin"),"/extdata/test_raw_fcs_files/")
+output_file_dir <- "out_test/"
 homogenize(metadata_filename, panel_filename, input_file_dir, output_file_dir)
 
 #prep external anchor 
@@ -61,18 +61,18 @@ anchor_metadata_filename <- paste0(path.package("cytofin"),"/extdata/test_anchor
 input_file_dir <- output_file_dir #use the homogenized files
 anprep(anchor_metadata_filename, panel_filename, input_file_dir)
 
-#data normalization using meanshift transofmration function
+#data normalization using external anchors and meanshift transofmration function
 val_file_dir <- paste0(path.package("cytofin"),"/extdata/test_batch_fcs_files/")
-anchor_data_filename <- "./Prep_control.RData"	#use the prep statistics R datafile
+anchor_data_filename <- "./Prep_control.RData"
 output_file_dir <- "norm_test/"
-mode <- "meanshift"	#use meanshift mode 
-annorm(anchor_metadata_filename, anchor_data_filename, metadata_filename, panel_filename, input_file_dir, val_file_dir, output_file_dir, mode)	#include validation file
+mode <- "meanshift"
+annorm(anchor_metadata_filename, anchor_data_filename, metadata_filename, panel_filename, input_file_dir, val_file_dir, output_file_dir, mode)
 annorm(anchor_metadata_filename, anchor_data_filename, metadata_filename, panel_filename, input_file_dir, "none", output_file_dir, mode)
 
-#data normalization using 4 internal channels
+#data normalization using 4 internal channels and meanshift_bulk transformation function
 nchannels <- 4
 output_file_dir <- "norm_test2/"
-annorm_nrs(metadata_filename, panel_filename, input_file_dir, val_file_dir, output_file_dir, nchannels)	#include validation file
+annorm_nrs(metadata_filename, panel_filename, input_file_dir, val_file_dir, output_file_dir, nchannels)
 annorm_nrs(metadata_filename, panel_filename, input_file_dir, "none", output_file_dir, nchannels)
 
 ```
