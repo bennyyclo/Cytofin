@@ -60,7 +60,7 @@ Output: the anprep function concatenated the identified anchor file, one file pe
 
 Function definition:
 
-annorm (control_metadata_filename, control_data_filename, sample_metadata_filename, panel_filename, input_file_dir, val_file_dir="none" ,output_file_dir, mode)
+```annorm (control_metadata_filename, control_data_filename, sample_metadata_filename, panel_filename, input_file_dir, val_file_dir="none" ,output_file_dir, mode)```
 
 Input: 
 
