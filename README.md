@@ -85,6 +85,10 @@ Output: the annorm function applied different transformation functions (modes) t
 
 Internal anchor normalization:
 
+Function definition:
+
+
+
 Input: homogenized CyTOF files (.fcs), validation CyTOF files (.fcs, optional),metadata table file (.xlsx/.csv).
 
 Output:In the event that the external references are not available, internal anchors can be used. Here, we identifed the most stable channels as internal anchors using a PCA-based non-redundnacy score. A minimal of three channels should be selected to establish an internal refernece from which signal can be calibrated between CyTOF files.
