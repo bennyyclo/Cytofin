@@ -20,9 +20,13 @@ Function Definition:
 ```homogenize(metadata_filename, panel_filename, input_file_dir, output_file_dir)```
 
 Input: 
+
 metadata_file: metadata table of raw CyTOF files (.fcs)
+
 panel_filename: standardized antigen panel table file (.xlsx/.csv)
+
 input_file_dir: folder directory of input raw CyTOF files
+
 output_file_dir: folder directory of output CyTOF files
 
 Output: The homognize function take a user input antigen panel table, which include standardized antigen name and associated antigen search pattern. Given two Cytof files with distinct antigen naming, the program perform a regular expression search to match the synomymous term in the panel and correct the antigen name with standardized name in the panel.This function generated homogenized CyTOF file with user defined channel defined by the standardized antigen table.  
