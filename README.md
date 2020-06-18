@@ -45,45 +45,6 @@ Output:In the event that the external references are not available, internal anc
 
 Demo:Below is an example Rscript for CyTOF data inegration using Cytofin package.
 
-#import cytofin R package
-library(cytofin)
-
-#test homogenization function
-metadata_filename <- paste0(path.package("cytofin"),"/extdata/test_metadata_raw.csv")
-panel_filename <- paste0(path.package("cytofin"),"/extdata/test_panel.csv")
-input_file_dir <- paste0(path.package("cytofin"),"/extdata/test_raw_fcs_files/")
-output_file_dir <- "out_test/"
-homogenize(metadata_filename, panel_filename, input_file_dir, output_file_dir)
-
-#test anchor prep function 
-anchor_metadata_filename <- paste0(path.package("cytofin"),"/extdata/test_anchor_metadata_raw.csv")
-input_file_dir <- output_file_dir
-anprep(anchor_metadata_filename, panel_filename, input_file_dir)
-
-#test normalization function
-val_file_dir <- paste0(path.package("cytofin"),"/extdata/test_batch_fcs_files/")
-anchor_data_filename <- "./Prep_control.RData"
-output_file_dir <- "norm_test/"
-mode <- "meanshift" 
-annorm(anchor_metadata_filename, anchor_data_filename, metadata_filename, panel_filename, input_file_dir, val_file_dir, output_file_dir, mode)
-annorm(anchor_metadata_filename, anchor_data_filename, metadata_filename, panel_filename, input_file_dir, "none", output_file_dir, mode)
-#test normalization_nrs function
-nchannels <- 4
-output_file_dir <- "norm_test2/"
-annorm_nrs(metadata_filename, panel_filename, input_file_dir, val_file_dir, output_file_dir, nchannels)
-annorm_nrs(metadata_filename, panel_filename, input_file_dir, "none", output_file_dir, nchannels)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```{r}
+my_vec <- 1:10
+```
