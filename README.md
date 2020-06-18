@@ -21,13 +21,13 @@ Function Definition:
 
 Input: 
 
-```metadata_file```: metadata table of raw CyTOF files (.fcs)(must be in the current directory)
+```metadata_file```: metadata table of raw CyTOF files (.fcs)(must be in the current directory).
 
-```panel_filename```: standardized antigen panel table file (.xlsx/.csv)(must be in the current directory)
+```panel_filename```: standardized antigen panel table file (.xlsx/.csv)(must be in the current directory).
 
-```input_file_dir```: folder directory containing input homogenized CyTOF files
+```input_file_dir```: folder directory containing input raw CyTOF files.
 
-```output_file_dir```: folder directory containing output files
+```output_file_dir```: folder directory containing output homogenized files.
 
 Output: The homognize function take a user input antigen panel table, which include standardized antigen name and associated antigen search pattern. Given two Cytof files with distinct antigen naming, the program perform a regular expression search to match the synomymous term in the panel and correct the antigen name with standardized name in the panel.This function generated homogenized CyTOF file with user defined channel defined by the standardized antigen table.  
 
@@ -49,14 +49,18 @@ Input:
 
 ```metadata_filename```: metadata table of anchor CyTOF files (.fcs)(must be in the current directory).
 
-```panel_filename```: this is the standarized antigen paenl filename(.xlsx/.csv)(must be in the current directory).
+```panel_filename```: standardized antigen panel table file (.xlsx/.csv)(must be in the current directory).
 
-```input_file_dir```: this is the directory of the input file folder containing the homogenized FCS files
+```input_file_dir```: folder directory containing output data.
 
 
 Output: the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. The values will be store in the RData object. The function also outputs the concatenated anchor FCS files.
 
 2. Data Transformation:
+
+Function definition:
+
+
 
 Input: homogenized CyTOF files (.fcs), validation CyTOF files (.fcs, optional), anchor table file (.xlsx/.csv), metadata table file (.xlsx/.csv), and anchor table file (.xlsx/.csv).
 
