@@ -32,7 +32,7 @@ Input:
 
 ```output_file_dir```: folder directory containing output homogenized files.
 
-Output: This function generated homogenized CyTOF file with user defined channel defined by the standardized antigen table.  
+Output: homogenized CyTOF file with user-defined channels presented in the standardized antigen table.  
 
 
 
@@ -62,7 +62,7 @@ Input:
 ```input_file_dir```: folder directory containing output data.
 
 
-Output: the anprep function generates an RData object containig reference statistics. The function also outputs the concatenated anchor FCS files.
+Output: an RData object containig reference statistics and concatenated anchor FCS files.
 
 2. Data Transformation:
 
