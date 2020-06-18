@@ -11,7 +11,7 @@ Cytofin provided three functions for Cytof data integration:
 3. annorm-this function performs signal normalization using transformation function based on the anchor from anprep.
 4. annorm_nrs-this function performs signal normalization using stabilized channels as internal anchors. 
 
-1. CyTOF data homogenization
+*CyTOF data homogenization*
 
 ![Alt text](./images/Slide1.png?raw=true "Title")
 
