@@ -15,7 +15,9 @@ Cytofin provided three functions for Cytof data integration:
 
 ![Alt text](./images/Slide1.png?raw=true "Title")
 
-Function Definition: _homogenize(metadata_filename, panel_filename, input_file_dir, output_file_dir)_
+Function Definition: 
+
+```{r}homogenize(metadata_filename, panel_filename, input_file_dir, output_file_dir)```
 
 Input: raw CyTOF files (.fcs), standardized antigen panel table file (.xlsx/.csv), metadata table (.xlsx/.csv). 
 
