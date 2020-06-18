@@ -87,7 +87,6 @@ Internal anchor normalization:
 
 
 ![Alt text](./images/Slide3.PNG?raw=true "Title")
-
 Function definition:
 
 ```annorm_nrs(sample_metadata_filename, panel_filename, input_file_dir, val_file_dir="none", output_file_dir, nchannels)```
