@@ -35,9 +35,9 @@ Output: The homognize function take a user input antigen panel table, which incl
 
 ![Alt text](./images/Slide2.PNG?raw=true "Title")
 
-The normalization include two steps: 1. preparation of external anchors and 2. application of transformation function.
-
 External anchor normalization:
+
+The external anchor normalization include two steps: 1. preparation of external anchors and 2. application of transformation function.
 
 1. Anchors preparation:
 
