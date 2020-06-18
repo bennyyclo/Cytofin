@@ -32,10 +32,9 @@ Input:
 Output: The homognize function take a user input antigen panel table, which include standardized antigen name and associated antigen search pattern. Given two Cytof files with distinct antigen naming, the program perform a regular expression search to match the synomymous term in the panel and correct the antigen name with standardized name in the panel.This function generated homogenized CyTOF file with user defined channel defined by the standardized antigen table.  
 
 **CyTOF data normalization**
+External anchor normalization:
 
 ![Alt text](./images/Slide2.PNG?raw=true "Title")
-
-External anchor normalization:
 
 The external anchor normalization includes: 1. preparation of external anchors and 2. application of transformation function.
 
