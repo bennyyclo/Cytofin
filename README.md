@@ -37,13 +37,22 @@ Output: The homognize function take a user input antigen panel table, which incl
 
 External anchor normalization:
 
-The external anchor normalization include two steps: 1. preparation of external anchors and 2. application of transformation function.
+The external anchor normalization includes: 1. preparation of external anchors and 2. application of transformation function.
 
 1. Anchors preparation:
 
-Function definition: _anprep(metadata_filename, panel_filename, input_file_dir)_
+Function definition: 
 
-Input: homogenized CyTOF files (.fcs), metadata table file (.xlsx/.csv), and anchor table file (.xlsx/.csv).
+```anprep(metadata_filename, panel_filename, input_file_dir)```
+
+Input: 
+
+```metadata_filename```: this is the anchor table filename of homogenized CyTOF files (.fcs)(must be in the current directory).
+
+```panel_filename```: this is the standarized antigen paenl filename(.xlsx/.csv)(must be in the current directory).
+
+```input_file_dir```: this is the directory of the input file folder containing the homogenized FCS files
+
 
 Output: the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. The values will be store in the RData object. The function also outputs the concatenated anchor FCS files.
 
