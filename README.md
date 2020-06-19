@@ -19,10 +19,11 @@ Cytofin provided three functions for Cytof data integration:
 
 3. Install the Cytofin package using the following command:
 
-```library(devtools)
+```
+library(devtools)
 
-devtools::install()```
-
+devtools::install()
+```
 
 
 
