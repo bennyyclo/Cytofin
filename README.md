@@ -19,7 +19,7 @@ Cytofin provided three functions for Cytof data integration:
 
 2. Once unpacked, go inside the cytofin folder and initiate the R environment.
 
-3. Install the Cytofin package using the following command:
+3. Install the Cytofin package using the following R commands:
 
 ```
 library(devtools)
