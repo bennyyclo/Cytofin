@@ -13,18 +13,18 @@ Cytofin provided three functions for Cytof data integration:
 
 **Installation**
 
-1. Go to https://github.com/bennyyclo/Cytofin and click on clone or download button to download the working directory.
+1. Go to https://github.com/bennyyclo/Cytofin and click on clone or download button to download the package to the working directory.
 
 2. Once unpacked, go inside the cytofin folder and initiate the R environment.
 
 3. Install the Cytofin package using the following command:
 
-```
-library(devtools)
+```library(devtools)
 
-devtools::install()
+devtools::install()```
 
-```
+
+
 
 
 
