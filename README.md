@@ -25,10 +25,6 @@ library(devtools)
 devtools::install()
 ```
 
-
-
-
-
 **CyTOF data homogenization**
 
 ![Alt text](./images/Slide1.png?raw=true "Title")
@@ -64,7 +60,7 @@ The external anchor normalization includes: 1. preparation of external anchors a
 1. Anchors preparation:
 
 Description: 
-The anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. 
+the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. 
 
 Function definition: 
 
@@ -137,7 +133,7 @@ Input:
 
 Output: normalized CyTOF files.
 
-#Computational Pipeline for CyTOF data integration
+#Computational Pipeline for CyTOF data integration#
 
 Below is an demo Rscript using Cytofin package for CyTOF data integration.
 
