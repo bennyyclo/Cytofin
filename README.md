@@ -135,7 +135,7 @@ Input:
 
 Output: normalized CyTOF files.
 
-**Computational Pipeline for CyTOF data integration**
+**Computational pipeline for CyTOF data integration**
 
 Below is an demo Rscript using Cytofin package for CyTOF data integration.
 
