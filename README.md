@@ -160,13 +160,17 @@ val_file_dir <- paste0(path.package("cytofin"),"/extdata/test_batch_fcs_files/")
 anchor_data_filename <- "./Prep_control.RData"
 output_file_dir <- "norm_test/"
 mode <- "meanshift"
-annorm(anchor_metadata_filename, anchor_data_filename, metadata_filename, panel_filename, input_file_dir, val_file_dir, output_file_dir, mode)
-annorm(anchor_metadata_filename, anchor_data_filename, metadata_filename, panel_filename, input_file_dir, "none", output_file_dir, mode)
+annorm(anchor_metadata_filename, anchor_data_filename, metadata_filename, panel_filename, 
+input_file_dir, val_file_dir, output_file_dir, mode)
+annorm(anchor_metadata_filename, anchor_data_filename, metadata_filename, panel_filename, 
+input_file_dir, "none", output_file_dir, mode)
 
 #data normalization using 4 internal channels and meanshift_bulk transformation function
 nchannels <- 4
 output_file_dir <- "norm_test2/"
-annorm_nrs(metadata_filename, panel_filename, input_file_dir, val_file_dir, output_file_dir, nchannels)
-annorm_nrs(metadata_filename, panel_filename, input_file_dir, "none", output_file_dir, nchannels)
+annorm_nrs(metadata_filename, panel_filename, input_file_dir, val_file_dir, 
+output_file_dir, nchannels)
+annorm_nrs(metadata_filename, panel_filename, input_file_dir, "none", 
+output_file_dir, nchannels)
 
 ```
