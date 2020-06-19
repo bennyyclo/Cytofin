@@ -54,9 +54,8 @@ Output: homogenized CyTOF file with user-defined channels presented in the stand
 
 
 
-**CyTOF data normalization**
+**CyTOF data normalization using external anchors**
 
-External anchor normalization:
 
 ![Alt text](./images/Slide2.PNG?raw=true "Title")
 
@@ -111,7 +110,7 @@ Input:
  
 Output: normalized CyTOF files.
 
-Internal anchor normalization:
+**CyTOF data normalization using internal anchors**
 
 
 ![Alt text](./images/Slide3.PNG?raw=true "Title")
