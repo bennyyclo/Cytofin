@@ -40,8 +40,8 @@ ref_panel <- read.csv(panel_filename)
 
 #ref_panel <- readxl::read_excel(panel_filename)
 
-(lineage_markers <- ref_panel$desc[ref_panel$Lineage == 1])
-(functional_markers <- ref_panel$desc[ref_panel$Functional == 1])
+(lineage_markers <- as.character(ref_panel$desc[ref_panel$Lineage == 1]))
+(functional_markers <- as.character(ref_panel$desc[ref_panel$Functional == 1]))
 all_markers <- c(lineage_markers, functional_markers)
 
 #transformation function

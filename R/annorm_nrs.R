@@ -33,8 +33,8 @@ ref_panel <- read.csv(panel_filename)
 
 #ref_panel <- readxl::read_excel(panel_filename)
 
-(lineage_markers <- ref_panel$desc[ref_panel$Lineage == 1])
-(functional_markers <- ref_panel$desc[ref_panel$Functional == 1])
+(lineage_markers <- as.character(ref_panel$desc[ref_panel$Lineage == 1]))
+(functional_markers <- as.character(ref_panel$desc[ref_panel$Functional == 1]))
 all_markers <- c(lineage_markers, functional_markers)
 
 #transformation function
@@ -96,7 +96,7 @@ expr <- flowCore::fsApply(fcs_asinh, flowCore::exprs)
 mean_uni <- apply(expr, 2, mean)
 var_uni <- apply(expr, 2, var)
 nrs_sample <- flowCore::fsApply(fcs_asinh[, all_markers], NRS, use.exprs = TRUE)
-colnames(nrs_sample) <- ref_panel$range[match((colnames(nrs_sample)), ref_panel$desc)]
+colnames(nrs_sample) <- as.character(ref_panel$range[match((colnames(nrs_sample)), ref_panel$desc)])
 nrs <- colMeans(nrs_sample, na.rm = TRUE)
 
 nrs_sample <- data.frame(nrs_sample)
@@ -117,8 +117,7 @@ ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjus
 
 #select top 5 markers for calibration
 selected_markers <- names(sort(nrs, decreasing = FALSE))[1:nchannels]
-selected_markers<- ref_panel$desc[match(selected_markers, ref_panel$range)]
-selected_markers <- as.character(selected_markers)
+selected_markers<- as.character(ref_panel$desc[match(selected_markers, ref_panel$range)])
 ##
 
 
