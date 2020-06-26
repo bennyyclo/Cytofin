@@ -187,7 +187,9 @@ var_val <- apply(expr_val, 2, var)
 mean_val_mean <- mean(mean_val)
 var_val_mean <- mean(var_val)
 
-write.csv(data.frame(markername, mean_norm[all_markers], mean_val[all_markers]), paste0(output_file_dir,"rmsd_",filename,".csv"))
+write.csv(data.frame(markername, mean_b4norm[all_markers] ,mean_norm[all_markers], mean_val[all_markers]), paste0(output_file_dir,"mean_expr_",filename,".csv"))
+}else{
+write.csv(data.frame(markername, mean_b4norm[all_markers] ,mean_norm[all_markers]), paste0(output_file_dir,"mean_expr_",filename,".csv"))
 }
 
 
