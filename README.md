@@ -103,7 +103,7 @@ Input:
 
 ```output_file_dir```: folder directory containing output normalized CyTOF data file.
 
-```mode```: transformation function used for normaliztion (_meanshift_, _meanshift_bulk_, _variacne_, _z_score_, _beadlike_).
+```mode```: transformation function used for normaliztion (_meanshift_, _meanshift_bulk_, _variance_, _z_score_, _beadlike_).
 
  
 Output: normalized CyTOF files.
