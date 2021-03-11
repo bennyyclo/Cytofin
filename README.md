@@ -19,7 +19,7 @@ CytofIN provided three functions for CyTOF data integration:
 
 2. Once unpacked, go inside the cytofin folder and initiate the R environment.
 
-3. Install the Cytofin package using the following R commands:
+3. Install the CytofIN package using the following R commands:
 
 ```
 library(devtools)
@@ -32,7 +32,7 @@ devtools::install()
 ![Alt text](./images/Slide1.png?raw=true "Title")
 
 Description:
-The homognize function take a user input antigen panel table, which include standardized antigen name and associated antigen search pattern. Given two Cytof files with distinct antigen naming, the program perform a regular expression search to match the synomymous term in the panel and correct the antigen name with standardized name in the panel.
+The homognize function takes a user input antigen panel table, which includes standardized antigen name and associated antigen search pattern. Given two CyTOF files with distinct antigen naming, the program performs a regular expression search to match the synonymous term in the panel and correct the antigen name with standardized names in the panel.
 
 Function Definition: 
 
