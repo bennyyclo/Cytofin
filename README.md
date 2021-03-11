@@ -32,7 +32,7 @@ devtools::install()
 ![Alt text](./images/Slide1.png?raw=true "Title")
 
 Description:
-The homognize function takes a user input antigen panel table, which includes standardized antigen name and associated antigen search pattern. Given two CyTOF files with distinct antigen naming, the program performs a regular expression search to match the synonymous term in the panel and correct the antigen name with standardized names in the panel.
+the homognize function takes a user input antigen panel table, which includes standardized antigen name and associated antigen search pattern. Given two CyTOF files with distinct antigen naming, the program performs a regular expression search to match the synonymous term in the panel and correct the antigen name with standardized names in the panel.
 
 Function Definition: 
 
