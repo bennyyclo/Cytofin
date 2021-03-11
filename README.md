@@ -57,7 +57,7 @@ Output: homogenized CyTOF file with user-defined channels presented in the stand
 
 ![Alt text](./images/Slide2.PNG?raw=true "Title")
 
-The external anchor normalization includes: 1. preparation of external anchors and 2. application of transformation function.
+The external anchor normalization steps include: 1. preparation of external anchors and 2. application of transformation function.
 
 1. Anchors preparation:
 
