@@ -1,4 +1,4 @@
-# Cytofin
+# CytofIN
 
 CytofIN (CyTOF integration) is an R package for homogenizing and integrating hetereogenous Cytof data from diverse data source.
 
