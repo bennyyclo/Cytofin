@@ -4,7 +4,7 @@ CytofIN (CyTOF integration) is an R package for homogenizing and integrating het
 
 Before CyTOF data integration, all CyTOF files need to be homogenized to have consistent channels. CytofIN requires that all input CyTOF files be homogenized based on a user-provided standardized panel with user defined search pattern. To normalize the CyTOF data, CytofIN uses a novel generalized anchor strategy that defines the based line of the signal between batch to correct for batch effects. One anchor needs to be identified by the user from each plate (batch). A reference anchor is generated based on the mean expression of all identified anchors from each plate (batch). Next, a user-specified transformation function is applied to fit each plate-specific anchor to the reference data distribution and the same transformation is then applied to correct the sample data signal on each plate.  
 
-CytofIN provided three functions for Cytof data integration:
+CytofIN provided three functions for CyTOF data integration:
 
 1. homogenize-this function performs batch homogenization of cytof data based on a user-defined panel and search pattern. 
 2. anprep-this function generates reference statistics from anchors identified from each plate (batch).
