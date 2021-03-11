@@ -62,7 +62,7 @@ The external anchor normalization steps include: 1. preparation of external anch
 1. Anchors preparation:
 
 Description: 
-the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variacne which will be used for batch correction. 
+the anprep function concatenated the identified anchor file, one file per plate/batch, and subsequently generated summary statistics including mean and variance which will be used for batch correction. 
 
 Function definition: 
 
