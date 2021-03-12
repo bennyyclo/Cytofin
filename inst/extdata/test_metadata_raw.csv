@@ -5,3 +5,8 @@ CRLF2_Plate1_UPN53 das + TSLP.fcs,CRLF2,plate1,UPN53,das_TSLP,,homogenized_CRLF2
 ALL05v2_Plate2_healthy basal1.fcs,ALL05v2,plate2,Healthy,Basal,1,homogenized_ALL05v2_plate2_healthy basal1.fcs
 ALL08_Plate8_Healthy03 basal.fcs,ALL08,plate8,Healthy03,Basal,,homogenized_ALL08_plate9_Healthy03 basal.fcs
 CRLF2_Plate1_Healthy 04 BCR.fcs,CRLF2,plate1,Healthy04,BCR,,homogenized_CRLF2_plate1_Healthy 04 BCR.fcs
+MS_Plate5_SU978 Basal.fcs,MajSak,plate5,SU978,Basal,,homogenized_MajSak_plate5_SU978 Basal.fcs
+MS_Plate5_Healthy BM.fcs,MajSak,plate5,Healthy,BM,,homogenized_MajSak_plate5_Healthy BM.fcs
+SJ_Plate2_TB010950_Basal.fcs,StJude,plate2,TB010950,Basal,,homogenized_StJude_plate2_TB010950_Basal.fcs
+SJ_Plate2_Healthy_BM.fcs,StJude,plate2,Healthy,BM,,homogenized_StJude_plate2_Healthy_BM.fcs
+
