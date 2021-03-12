@@ -6,7 +6,7 @@ Before CyTOF data integration, all CyTOF files need to be homogenized to have co
 
 CytofIN provided three functions for CyTOF data integration:
 
-1. homogenize-this function performs batch homogenization of cytof data based on a user-defined panel and search pattern. 
+1. homogenize-this function performs batch homogenization of CyTOF data based on a user-defined panel and search pattern. 
 2. anprep-this function generates reference statistics from anchors identified from each plate (batch).
 3. annorm-this function performs signal normalization using transformation function based on the anchor from anprep.
 4. annorm_nrs-this function performs signal normalization using stabilized channels as internal anchors. 
