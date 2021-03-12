@@ -208,20 +208,22 @@ plot(mean_norm[all_markers], col='darkgreen', xlab='antigen', ylab='plate expres
 legend(1,10,legend=c("normalized", "original"),col=c("darkgreen", "green"), lty=1:2, cex=0.8)
 
 #plot 4
-#plot(mean_uni[all_markers], col='red', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,40), ylim=c(-5,10), main='overlay', cex.main=1)
-#par(new=TRUE)
+if (val_file_dir != "none"){
+plot(mean_b4norm[all_markers], col='green', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
+par(new=TRUE)
+plot(mean_norm[all_markers], col='darkgreen', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
+par(new=TRUE)
+plot(mean_val[all_markers], col='purple', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
+par(new=TRUE)
+legend(1,10,legend=c("original", "normalized", "validation"),col=c("green", "darkgreen", "purple"), lty=1:2, cex=0.8)
+}else{
 plot(mean_b4norm[all_markers], col='green', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
 par(new=TRUE)
 plot(mean_norm[all_markers], col='darkgreen', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
 par(new=TRUE)
 legend(1,10,legend=c("original", "normalized"), col=c("green", "darkgreen"), lty=1:2, cex=0.8)
-
-if (val_file_dir != "none"){
-par(new=TRUE)
-plot(mean_val[all_markers], col='purple', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
-par(new=TRUE)
-legend(1,10,legend=c("original", "normalized", "validation"),col=c("green", "darkgreen", "purple"), lty=1:2, cex=0.8)
 }
+
 
 #expression (std)
 #plot 5
@@ -241,19 +243,20 @@ plot(sqrt(var_norm[all_markers]), col='darkgreen', xlab='antigen', ylab='plate e
 legend(1,10,legend=c("normalized", "original"),col=c("darkgreen", "green"), lty=1:2, cex=0.8)
 
 #plot 8
-#plot(sqrt(var_uni[all_markers]), col='red', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,40), ylim=c(-5,10), main='overlay', cex.main=1)
-#par(new=TRUE)
+if (val_file_dir != "none"){
+plot(sqrt(var_b4norm[all_markers]), col='green', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
+par(new=TRUE)
+plot(sqrt(var_norm[all_markers]), col='darkgreen', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
+par(new=TRUE)
+plot(var_val[all_markers], col='purple', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
+par(new=TRUE)
+legend(1,10,legend=c("original", "normalized", "validation"), col=c("green", "darkgreen", "purple"), lty=1:2, cex=0.8)
+}else{
 plot(sqrt(var_b4norm[all_markers]), col='green', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
 par(new=TRUE)
 plot(sqrt(var_norm[all_markers]), col='darkgreen', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
 par(new=TRUE)
 legend(1,10,legend=c("original", "normalized"), col=c("green", "darkgreen"), lty=1:2, cex=0.8)
-
-if (val_file_dir != "none"){
-par(new=TRUE)
-plot(var_val[all_markers], col='purple', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
-par(new=TRUE)
-legend(1,10,legend=c("original", "normalized", "validation"), col=c("green", "darkgreen", "purple"), lty=1:2, cex=0.8)
 }
 
 
