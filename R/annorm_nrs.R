@@ -107,13 +107,15 @@ nrs_sample$sample_id <- rownames(nrs_sample)
 #colnames(nrs_sample) <- ref_panel$range[match((colnames(nrs_sample)), ref_panel$desc)]
 ggdf <- reshape2::melt(nrs_sample, id.var = "sample_id", value.name = "nrs", variable.name = "antigen")
 ggdf$antigen <- factor(ggdf$antigen, levels = markers_ord)
-ggplot2::ggplot(ggdf, ggplot2::aes(x = antigen, y = nrs)) +
+p <- ggplot2::ggplot(ggdf, ggplot2::aes(x = antigen, y = nrs)) +
 ggplot2::geom_point(ggplot2::aes(color = sample_id), alpha = 0.9,
 position = ggplot2::position_jitter(width = 0.3, height = 0)) +
 ggplot2::geom_boxplot(outlier.color = NA, fill = NA) +
 ggplot2::stat_summary(fun.y = "mean", geom = "point", shape = 21, fill = "white") +
 ggplot2::theme_bw() +
 ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+print(p)
 
 #select top 5 markers for calibration
 selected_markers <- names(sort(nrs, decreasing = FALSE))[1:nchannels]
