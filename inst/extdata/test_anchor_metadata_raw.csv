@@ -1,0 +1,5 @@
+filename,cohort,plate_number,patient_id,condition,population
+ALL05v2_Plate2_healthy basal1.fcs,ALL05v2,plate2,Healthy,Basal,1
+ALL08_Plate8_Healthy03 basal.fcs,ALL08,plate8,Healthy03,Basal,
+CRLF2_Plate1_Healthy 04 BCR.fcs,CRLF2,plate1,Healthy04,BCR,
+MS_Plate5_Healthy BM.fcs,MajSak,plate5,Healthy,BM,
