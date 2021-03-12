@@ -114,7 +114,7 @@ Output: normalized CyTOF files.
 ![Alt text](./images/Slide3.PNG?raw=true "Title")
 
 Description:
-In the event that the external references are not available, internal anchors can be used. Here, we identified the most stable channels as internal anchors using a PCA-based non-redundnacy score. A minimal of three channels should be selected to establish an internal refernece from which signal can be calibrated between CyTOF files.
+In the event that the external references are not available, internal anchors can be used. Here, we identified the most stable channels as internal anchors using a PCA-based non-redundnacy score (NRS). A minimal of three channels should be selected to establish an internal refernece from which signal can be calibrated between CyTOF files.
 
 Function definition:
 
