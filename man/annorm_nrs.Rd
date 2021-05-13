@@ -8,7 +8,7 @@ annorm_nrs(
   sample_metadata_filename,
   panel_filename,
   input_file_dir,
-  val_file_dir,
+  val_file_dir = "none",
   output_file_dir,
   nchannels
 )

@@ -7,11 +7,24 @@
 homogenize(metadata_filename, panel_filename, input_file_dir, output_file_dir)
 }
 \arguments{
-\item{metadata_filename}{panel_filename input_file_dir output_file_dir}
+\item{metadata_filename}{A filepath leading to an .xlsx or .csv file
+containing a table of CyTOF file (.fcs file) names. Columns should include ____.
+Must be in the current directory.}
+
+\item{panel_filename}{A filepath leading to an .xlsx or .csv file containing
+a table of standardized antigen panel information. Columns should include ____.
+Must be in the current directory.}
+
+\item{input_file_dir}{A folder directory containing the input CyTOF files
+to be homogenized.}
+
+\item{output_file_dir}{A folder directory containing output homogenized files.}
 }
 \value{
-homogenized files with specified panel
+Homogenized files (in .fcs format) with user-defined channels according
+to the file named panel_filename.
 }
 \description{
-This function homogenize CyTOF data panel given a standarize panel.
+This function homogenizes CyTOF data (.fcs files) from heterogeneous sources
+according to the standard panel in panel_filename.
 }
