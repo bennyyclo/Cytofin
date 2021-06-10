@@ -3,4 +3,5 @@
 export(annorm)
 export(annorm_nrs)
 export(anprep)
-export(homogenize)
+export(cytofin_homogenize)
+export(generate_metadata_template)
