@@ -17,13 +17,13 @@ get_extension <- function(filename) {
 }
 
 
-#' Title
+#' Alter a flowFrame to only include data from channels in a reference panel
 #'
-#' @param fcs_raw 
-#' @param ref_panel 
+#' @param fcs_raw A flowFrame containing unprocessed CyTOF data
+#' @param ref_panel A data.frame representing the reference panel data for a 
+#' cytofin analysis.
 #'
 #' @return
-#' @export
 #'
 #' @examples
 #' TO DO: Insert examples

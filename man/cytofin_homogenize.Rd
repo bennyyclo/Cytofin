@@ -13,12 +13,18 @@ cytofin_homogenize(
 }
 \arguments{
 \item{metadata_path}{A filepath leading to an .xlsx or .csv file
-containing a table of CyTOF file (.fcs file) names. Columns should include ____.
-Must be in the current directory.}
+containing a table of CyTOF file (.fcs file) names. Columns should include
+\code{filename}, \code{cohort}, \code{plate_number}, \code{patient_id}, \code{condition}, \code{population},
+and \code{validation}. TO DO: Change the names of these columns to more descriptive
+names and make sure that they are all actually needed.
+See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
 \item{panel_path}{A filepath leading to an .xlsx or .csv file containing
-a table of standardized antigen panel information. Columns should include ____.
-Must be in the current directory.}
+a table of standardized antigen panel information. Columns should include
+\code{desc}, \code{range}, \code{metal_pattern}, \code{antigen_pattern}, \code{Lineage}, \code{Functional},
+and \code{General}. TO DO: Change the names of these columns to more descriptive
+names and make sure that they are all actually needed.
+See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
 \item{input_data_path}{A folder directory containing the input CyTOF files
 to be homogenized.}
@@ -39,7 +45,7 @@ according to the standard panel in \code{panel_path.}
 \examples{
 
 # For a complete example of the `cytofin` workflow, 
-# see the packages vignette by running `vignette(package = "cytofin")`
+# see the packages vignette by running `vignette("help", package = "cytofin")`
 
 # download and store the metadata file
 TO DO 
