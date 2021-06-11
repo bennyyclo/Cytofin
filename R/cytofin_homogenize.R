@@ -10,7 +10,7 @@
 #' names and make sure that they are all actually needed. 
 #' See the vignette for details: \code{vignette("help", package = "cytofin")} 
 #' 
-#' @param panel_path A filepath leading to an .xlsx or .csv file containing 
+#' @param panel_path A file path leading to an .xlsx or .csv file containing 
 #' a table of standardized antigen panel information. Columns should include 
 #' `desc`, `range`, `metal_pattern`, `antigen_pattern`, `Lineage`, `Functional`, 
 #' and `General`. TO DO: Change the names of these columns to more descriptive
@@ -22,6 +22,9 @@
 #' to be homogenized.
 #' 
 #' @param output_data_path A folder directory containing output homogenized files.
+#' 
+#' @param verbose A boolean value indicating whether progress message should be 
+#' printed to the console during homogenization. Defaults to FALSE.
 #' 
 #' @return `cytofin_homogenize` doesn't return anything. Instead, it has the 
 #' side-effect of saving homogenized files (in .fcs format) to the directory 
@@ -52,7 +55,13 @@
 #' TO DO 
 
 cytofin_homogenize <- 
-  function(metadata_path, panel_path, input_data_path, output_data_path) {
+  function(
+    metadata_path, 
+    panel_path, 
+    input_data_path, 
+    output_data_path, 
+    verbose = FALSE) 
+  {
     
     # create output directory for homogenized .fcs files
     dir.create(output_data_path)
@@ -78,8 +87,6 @@ cytofin_homogenize <-
     condition <- md$condition
     population <- md$population
     
-    print(md)
-    
     # read reference panel information
     if (get_extension(panel_path) == "xlsx") {
       ref_panel <- readxl::read_excel(panel_path)
@@ -91,13 +98,17 @@ cytofin_homogenize <-
     # for all files in the input directory
     for (file in md$filename) {
       # read in FCS file
+      sink(file = "/dev/null")
       fcs_raw <- 
         flowCore::read.FCS(
           filename = file.path(input_data_path, file), 
           transformation = FALSE, 
           truncate_max_range = FALSE
         )
+      sink()
+      if(verbose) {
       cat("filename:", file, "\n")
+      }
       
       # parse panel in FCS files
       data_panel_antigens <- 
@@ -108,7 +119,6 @@ cytofin_homogenize <-
       
       # for each channel in the reference panel
       for (i in 1:length(ref_panel$range)) {
-        cat(i, "\n")
         tryCatch(
           {
             # extract the antigen name in the reference and its corresponding regex
@@ -138,15 +148,17 @@ cytofin_homogenize <-
               # do nothing???
             }
             
-            cat(
-              "matched data antigen: ",
-              data_antigen,
-              "\nwith the reference antigen: ",
-              ref_antigen,
-              "\nusing the regex: ",
-              ref_antigen_regex,
-              "\n"
-            )
+            if(verbose) {
+              cat(
+                "matched data antigen: ",
+                data_antigen,
+                "\nwith the reference antigen: ",
+                ref_antigen,
+                "\nusing the regex: ",
+                ref_antigen_regex,
+                "\n"
+              )
+            }
           }, 
           # what's going on with this error function???
           error = 
@@ -162,7 +174,8 @@ cytofin_homogenize <-
             }
         )
         
-        fcs_raw
+        # TO DO: remove line below this comment
+        # fcs_raw
       }
       
       # finalize the fcs file to write as output

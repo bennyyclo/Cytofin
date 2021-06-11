@@ -8,7 +8,8 @@ cytofin_homogenize(
   metadata_path,
   panel_path,
   input_data_path,
-  output_data_path
+  output_data_path,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -19,7 +20,7 @@ and \code{validation}. TO DO: Change the names of these columns to more descript
 names and make sure that they are all actually needed.
 See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
-\item{panel_path}{A filepath leading to an .xlsx or .csv file containing
+\item{panel_path}{A file path leading to an .xlsx or .csv file containing
 a table of standardized antigen panel information. Columns should include
 \code{desc}, \code{range}, \code{metal_pattern}, \code{antigen_pattern}, \code{Lineage}, \code{Functional},
 and \code{General}. TO DO: Change the names of these columns to more descriptive
@@ -30,6 +31,9 @@ See the vignette for details: \code{vignette("help", package = "cytofin")}}
 to be homogenized.}
 
 \item{output_data_path}{A folder directory containing output homogenized files.}
+
+\item{verbose}{A boolean value indicating whether progress message should be
+printed to the console during homogenization. Defaults to FALSE.}
 }
 \value{
 \code{cytofin_homogenize} doesn't return anything. Instead, it has the
