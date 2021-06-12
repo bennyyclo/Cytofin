@@ -67,17 +67,10 @@ cytofin_homogenize <-
     dir.create(output_data_path)
     
     # read metadata table
-    if (get_extension(metadata_path) == "xlsx") {
-      md <- readxl::read_excel(metadata_path)
-    } else if (get_extension(metadata_path) == "csv") {
-      md <- read.csv(metadata_path)
-    } else { 
-      # throw error if the wrong kind of file is given
-      stop("metadata_path must point to an .xlsx or .csv file")
-    }
+    md_control <- cytofin_read_metadata(metadata_path)
     
-    # trim whitespace from all strings in metadata
-    md <- data.frame(lapply(md, trimws), stringsAsFactors = FALSE)
+    # read reference panel information
+    ref_panel <- cytofin_read_panel_info(panel_path)
     
     # extract components of the metadata (why???)
     filename <- md$filename
@@ -87,21 +80,8 @@ cytofin_homogenize <-
     condition <- md$condition
     population <- md$population
     
-    # read reference panel information
-    if (get_extension(panel_path) == "xlsx") {
-      ref_panel <- readxl::read_excel(panel_path)
-    } else if (get_extension(panel_path) == "csv") {
-      ref_panel <- read.csv(panel_path)
-    }
-    ref_panel <- data.frame(lapply(ref_panel, trimws), stringsAsFactors = FALSE)
-    
-    # for debugging
-    file_names <- md$filename
-    colnames_list <- vector(mode = "list", length = length(file_names))
-    j = 0
     # for all files in the input directory
     for (file in md$filename) {
-      j = j + 1
       # read in FCS file
       sink(file = "/dev/null")
       fcs_raw <- 
@@ -185,8 +165,6 @@ cytofin_homogenize <-
       
       # finalize the fcs file to write as output
       fcs <- homogenize_flowFrame(fcs_raw, ref_panel)
-      
-      colnames_list[[j]] <- colnames(flowCore::exprs(fcs))
       
       # write output fcs file to the specified directory
       filename <- paste0(output_data_path,"homogenized_", file)

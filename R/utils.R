@@ -69,3 +69,77 @@ homogenize_flowFrame <- function(fcs_raw, ref_panel) {
   return(fcs)
   
 }
+
+
+#' Read in a cytofin metadata file
+#' 
+#' This function reads a cytofin metadata file from a connection 
+#' that points to a .csv or a .xlsx file
+#'
+#' @param metadata_path A filepath leading to an .xlsx or .csv file 
+#' containing a table of CyTOF file (.fcs file) names. Columns should include
+#' `filename`, `cohort`, `plate_number`, `patient_id`, `condition`, `population`, 
+#' and `validation`. TO DO: Change the names of these columns to more descriptive
+#' names and make sure that they are all actually needed. 
+#' See the vignette for details: \code{vignette("help", package = "cytofin")}
+#'
+#' @return A data.frame containing the metadata information in the 
+#' file stored at `metadata_path`. 
+#'
+#' @examples
+#' my_path <- file.path("~", "foo", "bar", "metadata.csv")
+#' my_metadata <- cytofin_read_metadata(my_path)
+#' 
+cytofin_read_metadata <- function(metadata_path) {
+  
+  if (get_extension(metadata_path) == "xlsx") {
+    md <- readxl::read_excel(metadata_path)
+  } else if (get_extension(metadata_path) == "csv") {
+    md <- read.csv(metadata_path)
+  } else { 
+    # throw error if the wrong kind of file is given
+    stop("metadata_path must point to an .xlsx or .csv file")
+  }
+  
+  # trim whitespace from all strings in metadata
+  md <- data.frame(lapply(md_control, trimws), stringsAsFactors = FALSE)
+  
+  return(md)
+}
+
+
+#' Read in a cytofin reference panel information
+#' 
+#' This function reads cytofin reference panel information from a connection 
+#' that points to a .csv or a .xlsx file
+#'
+#' @param panel_path A file path leading to an .xlsx or .csv file containing 
+#' a table of standardized antigen panel information. Columns should include 
+#' `desc`, `range`, `metal_pattern`, `antigen_pattern`, `Lineage`, `Functional`, 
+#' and `General`. TO DO: Change the names of these columns to more descriptive
+#' names and make sure that they are all actually needed. 
+#' See the vignette for details: \code{vignette("help", package = "cytofin")}
+#'
+#' @return A data.frame containing the reference panel information in the 
+#' file stored at `panel_path`. 
+#'
+#' @examples
+#' my_path <- file.path("~", "foo", "bar", "panel.csv")
+#' my_metadata <- cytofin_read_panel_info(my_path)
+#' 
+cytofin_read_panel_info <- function(panel_path) {
+  
+  if (get_extension(panel_path) == "xlsx") {
+    ref_panel <- readxl::read_excel(panel_path)
+  } else if (get_extension(panel_path) == "csv") {
+    ref_panel <- read.csv(panel_path)
+  } else { 
+    # throw error if the wrong kind of file is given
+    stop("panel_path must point to an .xlsx or .csv file")
+  }
+  
+  # trim whitespace from all strings in reference panel
+  ref_panel <- data.frame(lapply(ref_panel, trimws), stringsAsFactors = FALSE)
+  
+  return(ref_panel)
+}
