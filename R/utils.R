@@ -34,23 +34,35 @@ homogenize_flowFrame <- function(fcs_raw, ref_panel) {
   ref_metals <- ref_panel$desc
   
   panel_fcs <- flowCore::pData(flowCore::parameters(fcs_raw))
+  panel_markers <- panel_fcs$desc
+  panel_metals <- as.character(panel_fcs$name)
+  panel_rownames <- row.names(panel_fcs)
+  
+  # create new flowFrame to be modified
   fcs <- fcs_raw
   
-  # why is this being done???
-  # what does the prefix ori_ mean???
-  ori_all_metals <- panel_fcs$name[panel_fcs$desc %in% ref_markers]
-  ori_vals <- row.names(panel_fcs)[panel_fcs$desc %in% ref_markers]
+  # only keep the markers/metals that are present in the reference marker list
+  panel_markers_to_keep <- intersect(panel_markers, ref_markers)
+  panel_metals_to_keep <- panel_metals[panel_markers %in% panel_markers_to_keep]
   
-  # sort
-  ori_all_metals_sorted <- 
-    ori_all_metals[order(as.numeric(gsub("[^[:digit:]]", "", ori_vals)))]
-  ref_metals_sorted <- 
-    ref_metals[order(as.numeric(gsub("[^[:digit:]]", "", ori_vals)))]
+  # create dictionary to look up which metals from the reference panel 
+  # correspond to shared antigens with the FCS file's panel (which may be on 
+  # different metals)
+  names(ref_metals) <- ref_markers
+  
+  # perform lookup to "rename" metals in the FCS file's panel to the standard
+  # metal name in the reference
+  new_panel_metals <- as.character(ref_metals[panel_markers_to_keep])
   
   # remove columns not present in ref_panel from final fcs file
   expr <- flowCore::exprs(fcs)
-  new_expr <- expr[, ori_all_metals_sorted]
-  final_expr <- new_expr[, colnames(new_expr) %in% ref_metals]
+  new_expr <- expr[, panel_metals_to_keep] 
+  
+  # rename metals using the looked-up values
+  colnames(new_expr) <- new_panel_metals
+  
+  # sort columns into the order in the reference panel
+  final_expr <- new_expr[ , ref_metals]
   flowCore::exprs(fcs) <- final_expr
   
   # return result 

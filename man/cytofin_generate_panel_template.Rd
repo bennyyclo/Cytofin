@@ -2,7 +2,7 @@
 % Please edit documentation in R/file_templates.R
 \name{cytofin_generate_panel_template}
 \alias{cytofin_generate_panel_template}
-\title{Generate a template for a cytofin metadata file}
+\title{Generate a template for a cytofin reference panel file}
 \usage{
 cytofin_generate_panel_template(template_path = getwd())
 }

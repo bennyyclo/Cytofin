@@ -95,8 +95,13 @@ cytofin_homogenize <-
     }
     ref_panel <- data.frame(lapply(ref_panel, trimws), stringsAsFactors = FALSE)
     
+    # for debugging
+    file_names <- md$filename
+    colnames_list <- vector(mode = "list", length = length(file_names))
+    j = 0
     # for all files in the input directory
     for (file in md$filename) {
+      j = j + 1
       # read in FCS file
       sink(file = "/dev/null")
       fcs_raw <- 
@@ -180,6 +185,8 @@ cytofin_homogenize <-
       
       # finalize the fcs file to write as output
       fcs <- homogenize_flowFrame(fcs_raw, ref_panel)
+      
+      colnames_list[[j]] <- colnames(flowCore::exprs(fcs))
       
       # write output fcs file to the specified directory
       filename <- paste0(output_data_path,"homogenized_", file)

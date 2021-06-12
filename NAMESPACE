@@ -2,7 +2,8 @@
 
 export(annorm)
 export(annorm_nrs)
-export(anprep)
+export(cytofin)
 export(cytofin_generate_metadata_template)
 export(cytofin_generate_panel_template)
 export(cytofin_homogenize)
+export(cytofin_prep_anchors)

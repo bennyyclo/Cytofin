@@ -44,7 +44,6 @@ cytofin_generate_metadata_template <- function(template_path = getwd()) {
 }
 
 
-
 #' Generate a template for a cytofin reference panel file
 #' 
 #' `cytofin_generate_panel_template` creates a template reference panel .csv file 
