@@ -7,6 +7,8 @@
 #' `filename`, `cohort`, `plate_number`, `patient_id`, `condition`, `population`, 
 #' and `validation`. TO DO: Change the names of these columns to more descriptive
 #' names and make sure that they are all actually needed. 
+#' TO DO: Add to the vignette how users are supposed to identify which rows from 
+#' the large metadata table should be used as anchors.
 #' See the vignette for details: \code{vignette("help", package = "cytofin")} 
 #' 
 #' @param panel_path A file path leading to an .xlsx or .csv file containing 
@@ -40,32 +42,45 @@ cytofin_prep_anchors <- function(metadata_path, panel_path, input_data_path) {
   
   # read in the input data as a flowSet
   fcs_control <- 
-    flowCore::read.flowSet( # change to read.FCS
+    flowCore::read.flowSet(
       file.path(input_data_path, paste0("homogenized_", md_control$filename)), 
       transformation = FALSE, 
       truncate_max_range = FALSE
     )
   
-  #calculate universal mean and variance
-  asinhNik <- flowCore::arcsinhTransform(a=0, b=0.2)
-  colname <- flowCore::colnames(fcs_control)
+  # calculate universal mean and variance
+  asinh_transform <- flowCore::arcsinhTransform(a = 0, b = 0.2)
+  col_names <- flowCore::colnames(fcs_control)
   expr_untransformed <- flowCore::fsApply(fcs_control, flowCore::exprs)
-  tlist <- flowCore::transformList(from = colname, tfun = asinhNik)
-  fcs_asinh <- flowCore::transform(fcs_control, tlist)
+  transform_list <- flowCore::transformList(from = col_names, tfun = asinh_transform)
+  fcs_asinh <- flowCore::transform(fcs_control, transform_list)
   expr <- flowCore::fsApply(fcs_asinh, flowCore::exprs)
   mean_uni <- apply(expr, 2, mean)
   var_uni <- apply(expr, 2, var)
   var_uni_mean <- mean(var_uni[all_markers])
   mean_uni_mean <- mean(mean_uni[all_markers])
   
-  save(var_uni, mean_uni, var_uni_mean, mean_uni_mean, file=paste0("Prep_control.RData"))
+  # save universal mean and variance information
+  # TO DO: save this to a specified directory instead of to the current directory
+  save(
+    var_uni, 
+    mean_uni, 
+    var_uni_mean, 
+    mean_uni_mean, 
+    file = paste0("prep_control.RData")
+  )
   
+  # write concatenated control file (asinh-transformed)
+  # TO DO: save this to a specified directory instead of to the current directory
   gc()
   filename <- paste0("concatenated_control.fcs")
   ff <- flowCore::flowFrame(expr)
   data_panel_name <- flowCore::pData(flowCore::parameters(fcs_control[[1]]))$desc
   flowCore::pData(flowCore::parameters(ff))$desc <- data_panel_name  
   flowCore::write.FCS(ff, filename)
+  
+  # write concatenated control file (untransformed)
+  # TO DO: save this to a specified directory instead of to the current directory
   
   gc()
   filename <- paste0("concatenated_control_untransformed.fcs")

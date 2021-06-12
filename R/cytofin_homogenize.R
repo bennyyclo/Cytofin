@@ -67,7 +67,7 @@ cytofin_homogenize <-
     dir.create(output_data_path)
     
     # read metadata table
-    md_control <- cytofin_read_metadata(metadata_path)
+    md <- cytofin_read_metadata(metadata_path)
     
     # read reference panel information
     ref_panel <- cytofin_read_panel_info(panel_path)
