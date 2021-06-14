@@ -102,7 +102,7 @@ cytofin_read_metadata <- function(metadata_path) {
   }
   
   # trim whitespace from all strings in metadata
-  md <- data.frame(lapply(md_control, trimws), stringsAsFactors = FALSE)
+  md <- data.frame(lapply(md, trimws), stringsAsFactors = FALSE)
   
   return(md)
 }

@@ -25,12 +25,12 @@ panel_fcs
 
 # cytofin
 
-CytofIn (CyTOF integration) is an R package for homogenizing and normalizing heterogeneous [mass cytometry (CyTOF)](https://pubmed.ncbi.nlm.nih.gov/21551058/) data from diverse data sources. Specifically, CytofIN provides functions that perform the following tasks: 
+CytofIn (CyTOF integration) is an R package for homogenizing and normalizing heterogeneous [mass cytometry (CyTOF)](https://pubmed.ncbi.nlm.nih.gov/21551058/) data from diverse data sources. Specifically, CytofIn provides functions that perform the following tasks: 
 
 * **Dataset homogenization** - CyTOF datasets that were collected separately may differ in which markers were included in their antibody panels; in addition, they may use different naming conventions for their panels' shared markers. Thus, data mining across multiple CyTOF datasets requires **homogenization,** the process of aligning each dataset's antibody panels so that they can be analyzed together. In CytofIN, data homogenization (i.e. panel alignment) is performed with the `cytofin_homogenize()` function that leverages user-provided panel information to combine datasets.
 * **Dataset normalization** - Combined analysis of multiple CyTOF datasets is likely to be confounded by dataset-to-dataset batch effects due to differences in instrumentation and experimental protocols between groups. To normalize multiple CyTOF datasets with respect to these batch effects, CytofIN provides 3 functions: `cytofin_prep_anchors()`, `cytofin_normalize()`, and `cytofin_normalize_nrs()`. 
 
-The general CytofIn workflow unfolds in 3 steps. First, users align the panels of the CyTOF datasets being integrated using `cytofin_homogenize()`. Second, users generate reference statistics from "generalized anchors" identified on each CyTOF plate (see below) using `cytofin_prep_anchors()`. Finally, users can then normalize/batch correct the datasets relative to one another using their choice of `cytofin_normalize()` or `cytofin_normalize_nrs()`, each of which performs the normalization slightly differently (see below). 
+The general CytofIn workflow unfolds in 3 steps. First, users align the panels of the CyTOF datasets being integrated using `cytofin_homogenize()`. Second, users generate reference statistics from "generalized anchors" identified on each CyTOF plate (see below) using `cytofin_prep_anchors()`. Finally, users can then normalize/batch correct the datasets relative to one another using their choice of `cytofin_normalize()` or `cytofin_normalize_nrs()`, each of which performs the normalization procedure differently (see below). 
 
 ## Installation
 
@@ -41,7 +41,7 @@ library(devtools)
 install_github("bennyyclo/Cytofin")
 ```
 
-To attach the CytofIn package to your current R session, run the following: 
+To attach the CytofIn package to your current R session, run the following line: 
 
 ```{r}
 library(cytofin)
@@ -50,6 +50,8 @@ library(cytofin)
 ## Usage
 
 ### CyTOF data homogenization
+
+Here, the term "homogenization" refers to the process of aligning the antigen panels of multiple CyTOF experiments by (1) removing all channels that are not shared across all cohorts and (2) standardizing the antigen names used to refer to each channel so that existing analysis tools (like the `flowCore` and `tidyverse` packages) can be applied in later analytical steps. In CytofIn, dataset homogenization is performed using the `cytofin_homogenize()` function.
 
 The `cytofin_homogenize()` function takes several arguments. The first of these is `metadata_path`, a string that specifies the file path to a .csv or .xlsx metadata file containing information about each of the .fcs files being analyzed. Specifically, the metadata file will have one row for each .fcs file being analyzed and must contain the following columns (all of which will be converted to character vectors):
 
@@ -98,7 +100,6 @@ cytofin_generate_panel_template(template_path = my_path)
 ```
 
 
-
 The final two arguments for `cytofin_homogenize` are `input_data_path` and `output_data_path`, two strings that indicate which directory input .fcs files should be read from and which directory homogenized .fcs files should be written to, respectively.
 
 Using these arguments, `cytofin_homogenize` can homogenize a set of CyTOF files with distinct antigen naming conventions. Specifically, the program performs a regular expression search to match the synonymous term in the panel and correct the antigen name with standardized names in the panel.
@@ -114,8 +115,8 @@ metadata_path <-
 panel_path <- 
   here::here("inst", "extdata", "test_panel.csv")
 input_data_path <- 
-  here::here("inst", "extdata", "test_raw_fcs_files/")
-output_data_path <- file.path("~", "Desktop", "out_test/")
+  here::here("inst", "extdata", "test_raw_fcs_files")
+output_data_path <- file.path("~", "temp", "out_test")
 
 # call homogenization function
 cytofin_homogenize(
@@ -148,31 +149,46 @@ The external anchor normalization proceeds with two steps:
 1. Preparation of external anchors and 
 2. Application of transformation function.
 
-We detail each of these steps below. 
+We detail each of these steps below.
 
 #### 1. Anchor preparation:
 
-Description: 
-the anprep function concatenates the identified anchor file, one file per plate/batch, and subsequently generates summary statistics including mean and variance which will be used for batch correction. 
+The `cytofin_prep_anchors` function concatenates the identified anchor files (one file per plate/batch) and subsequently generates summary statistics used for batch correction by later steps of the pipeline. These summary statistics include the univeral (i.e. overall) means and variances of all channels in the homogenized dataset as well as the means of both of these values (to be used in bulk, non-channel-specific batch correction). It can both return these statistics as a `list()` and save them as an .rds file in a specified directory.
 
-Function definition: 
+`cytofin_prep_anchors` takes 4 arguments: 
+* `metadata_path`: A connection leading to an .xlsx or .csv file containing a metadata table about each file to be analyzed. This file should be identical to that used for `cytofin_homogenize`. 
+* `panel_path`: A connection leading to an .xlsx or .csv file containing information about the standardized antigen panel in the homogenized dataset. This file should be identical to that used for `cytofin_homogenize`. 
+* `input_data_path`: A connection to a directory containing the input .FCS files from which to draw summary statistics 
+* `output_path`: A connection to a directory where the output .rds and .FCS files will be saved. The default is "none", in which case no output files will be stored (and the only effect of the function will be to return the calculated statistics as a `list()`).
 
-```anprep(metadata_filename, panel_filename, input_file_dir)```
+An example: 
 
-Input: 
+```{r}
+anchor_statistics <- 
+  cytofin_prep_anchors(
+    metadata_path = metadata_path, 
+    panel_path = panel_path, 
+    input_data_path = file.path("~", "temp", "out_test"), 
+    output_path = file.path("~", "temp", "out_test", "anchor_prep")
+  )
 
-```metadata_filename```: metadata table of anchor CyTOF files (.fcs)(must be in the current directory).
+print(anchor_statistics)
+```
 
-```panel_filename```: standardized antigen panel table file (.xlsx/.csv)(must be in the current directory).
+[TO DO: Some description of these values].
 
-```input_file_dir```: folder directory containing output data.
+#### 2. Batch correction
 
 
-Output: an RData object containig reference statistics and concatenated anchor FCS files.
 
-#### 2. Data transformation:
 
-Description: the annorm function applied different transformation functions (modes) to normalize each anchor to the referenece statistcs generated by the anprep function.
+
+
+
+
+
+
+Description: the annorm function applied different transformation functions (modes) to normalize each anchor to the reference statistics generated by the anprep function.
 
 Function definition:
 
