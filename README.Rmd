@@ -13,15 +13,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r}
-ref_panel
-```
-
-
-```{r}
-panel_fcs
-```
-
 
 # cytofin
 
@@ -55,13 +46,13 @@ Here, the term "homogenization" refers to the process of aligning the antigen pa
 
 The `cytofin_homogenize()` function takes several arguments. The first of these is `metadata_path`, a string that specifies the file path to a .csv or .xlsx metadata file containing information about each of the .fcs files being analyzed. Specifically, the metadata file will have one row for each .fcs file being analyzed and must contain the following columns (all of which will be converted to character vectors):
 
-* **filename - ** The name of the .fcs file within its local directory.
-* **cohort - ** The name of the cohort (i.e. experimental source) of each .fcs file.
-* **plate_number - ** The name of the CyTOF plate (e.g. "plate1", "plate2", etc.) on which the sample corresponding to each .fcs file was analyzed during data acquisition. 
-* **patient_id - ** The name of the patient to whom each .fcs file corresponds.
-* **condition - ** The stimulation condition corresponding to each .fcs file (i.e. "basal", "IL-3", etc.).
+* **filename -** The name of the .fcs file within its local directory.
+* **cohort -** The name of the cohort (i.e. experimental source) of each .fcs file.
+* **plate_number -** The name of the CyTOF plate (e.g. "plate1", "plate2", etc.) on which the sample corresponding to each .fcs file was analyzed during data acquisition. 
+* **patient_id -** The name of the patient to whom each .fcs file corresponds.
+* **condition -** The stimulation condition corresponding to each .fcs file (i.e. "basal", "IL-3", etc.).
 * **population -**  The cell population contained in each .fcs file (i.e. "T-cells", "B-cells", etc.). 
-* **validation - ** TO DO - I'm not sure what this column is?
+* **validation -** TO DO - I'm not sure what this column is?
 
 All of these fields are required for `cytofin_homogenize()` to work; "NA" can be recorded for any/all columns that don't apply to the experimental design of the files being analyzed (for example, if no stimulation conditions were used in the studies being integrated, enter "NA" for each element of the `condition` column). The `cytofin_generate_metadata_template` function is provided to generate an example metadata .csv file filled with dummy example data:
 
@@ -76,13 +67,13 @@ cytofin_generate_metadata_template(template_path = my_path)
 
 The second argument for `cytofin_homogenize` is `panel_path`, a string that specifies the file path to a .csv or .xlsx file containing information about the panel(s) of each of the .fcs files being analyzed. Each row represents a channel (i.e. a protein measurement) to be included in the final, homogenized panel.  This file must contain the following columns: 
 
-* **desc - ** TO DO ???
-* **range - ** TO DO ???
-* **metal_pattern - ** A regular expression used to _____. I DON'T THINK THIS IS EVER USED IN THE ACTUAL HOMOGENIZATION FUNCTION???
-* **antigen_pattern - ** A regular expression used to _____.
-* **lineage - ** A numeric vector representing whether or not a marker is a lineage marker (1 if yes; 0 otherwise).
-* **functional - ** A numeric vector representing whether or not a marker is a functional marker (1 if yes; 0 otherwise).
-* **general - ** A numeric vector representing whether or not a marker is a "general" (i.e. neither a lineage nor a functional) marker (1 if yes; 0 otherwise).
+* **desc -** TO DO ???
+* **range -** TO DO ???
+* **metal_pattern -** A regular expression used to _____. I DON'T THINK THIS IS EVER USED IN THE ACTUAL HOMOGENIZATION FUNCTION???
+* **antigen_pattern -** A regular expression used to _____.
+* **lineage -** A numeric vector representing whether or not a marker is a lineage marker (1 if yes; 0 otherwise).
+* **functional -** A numeric vector representing whether or not a marker is a functional marker (1 if yes; 0 otherwise).
+* **general -** A numeric vector representing whether or not a marker is a "general" (i.e. neither a lineage nor a functional) marker (1 if yes; 0 otherwise).
 
 The layout of this antigen panel is displayed graphically below. 
 
@@ -106,7 +97,7 @@ Using these arguments, `cytofin_homogenize` can homogenize a set of CyTOF files 
 
 Example function call: 
 
-```{r, echo = FALSE}
+```{r, warning = FALSE}
 # define input and output paths 
 # TO DO: We need to find a better way of getting these data to the user 
 #        referencing this vignette. Or we need to make the data smaller. 

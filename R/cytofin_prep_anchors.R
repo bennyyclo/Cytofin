@@ -111,7 +111,7 @@ cytofin_prep_anchors <- function(
     
     # write concatenated control file (asinh-transformed)
     gc()
-    filename <- file.path(out_path, "concatenated_control.fcs")
+    filename <- file.path(output_path, "concatenated_control.fcs")
     ff <- flowCore::flowFrame(expr)
     data_panel_name <- flowCore::pData(flowCore::parameters(fcs_control[[1]]))$desc
     flowCore::pData(flowCore::parameters(ff))$desc <- data_panel_name  
@@ -119,7 +119,7 @@ cytofin_prep_anchors <- function(
     
     # write concatenated control file (untransformed)
     gc()
-    filename <- file.path(out_path, "concatenated_control_untransformed.fcs")
+    filename <- file.path(output_path, "concatenated_control_untransformed.fcs")
     ff <- flowCore::flowFrame(expr_untransformed)
     data_panel_name <- flowCore::pData(flowCore::parameters(fcs_control[[1]]))$desc
     flowCore::pData(flowCore::parameters(ff))$desc <- data_panel_name  
