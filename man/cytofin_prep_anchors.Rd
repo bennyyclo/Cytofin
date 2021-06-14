@@ -4,14 +4,21 @@
 \alias{cytofin_prep_anchors}
 \title{Prepare CyTOF controls for batch normalization}
 \usage{
-cytofin_prep_anchors(metadata_path, panel_path, input_data_path)
+cytofin_prep_anchors(
+  metadata_path,
+  panel_path,
+  input_data_path,
+  output_path = "none"
+)
 }
 \arguments{
-\item{metadata_path}{A filepath leading to an .xlsx or .csv file
+\item{metadata_path}{A file path leading to an .xlsx or .csv file
 containing a table of CyTOF file (.fcs file) names. Columns should include
 \code{filename}, \code{cohort}, \code{plate_number}, \code{patient_id}, \code{condition}, \code{population},
 and \code{validation}. TO DO: Change the names of these columns to more descriptive
 names and make sure that they are all actually needed.
+TO DO: Add to the vignette how users are supposed to identify which rows from
+the large metadata table should be used as anchors.
 See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
 \item{panel_path}{A file path leading to an .xlsx or .csv file containing
@@ -23,10 +30,27 @@ See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
 \item{input_data_path}{A folder directory containing the input CyTOF files
 to be prepped for normalization}
+
+\item{output_path}{A file path specifying where to save the output .rds
+file containing the statistics calculated from this step and the concatenated
+.FCS files containing all cells from the generalized anchor samples. Defaults
+to "none", in which case no files are saved.}
 }
 \value{
-Data of summary statistics and concatenated control file
+a \code{list()} of summary statistics with the following elements:
+\itemize{
+\item var_uni:  a named numeric vector in which each entry corresponds to the
+universal variance of an antigen channel in the homogenized dataset
+\item mean_uni:  a named numeric vector in which each entry corresponds to the
+universal mean of an antigen channel in the homogenized dataset
+\item var_uni_mean:  The mean of all the channel-specific universal variances
+in \code{var_uni} (a scalar value)
+\item mean_uni_mean:  The mean of all the channel-specific universal means
+in \code{mean_uni} (a scalar value)
+}
 }
 \description{
-This function establishes control reference for CyTOF data normalization.
+This function calculates reference statistics for CyTOF data normalization by
+finding the universal means and universal variances of the generalized
+anchors identified in the metadata file at \code{metadata_path}.
 }
