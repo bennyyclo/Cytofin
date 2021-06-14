@@ -33,7 +33,6 @@ install_github("bennyyclo/Cytofin")
 ```
 
 To attach the CytofIn package to your current R session, run the following line: 
-
 ```{r}
 library(cytofin)
 ```
@@ -46,19 +45,19 @@ Here, the term "homogenization" refers to the process of aligning the antigen pa
 
 The `cytofin_homogenize()` function takes several arguments. The first of these is `metadata_path`, a string that specifies the file path to a .csv or .xlsx metadata file containing information about each of the .fcs files being analyzed. Specifically, the metadata file will have one row for each .fcs file being analyzed and must contain the following columns (all of which will be converted to character vectors):
 
-* **filename -** The name of the .fcs file within its local directory.
-* **cohort -** The name of the cohort (i.e. experimental source) of each .fcs file.
-* **plate_number -** The name of the CyTOF plate (e.g. "plate1", "plate2", etc.) on which the sample corresponding to each .fcs file was analyzed during data acquisition. 
-* **patient_id -** The name of the patient to whom each .fcs file corresponds.
-* **condition -** The stimulation condition corresponding to each .fcs file (i.e. "basal", "IL-3", etc.).
-* **population -**  The cell population contained in each .fcs file (i.e. "T-cells", "B-cells", etc.). 
-* **validation -** TO DO - I'm not sure what this column is?
+* **filename -** Required. The name of the .fcs file within its local directory.
+* **cohort -** Required. The name of the cohort (i.e. experimental source) of each .fcs file.
+* **plate_number -** Required. The name of the CyTOF plate (e.g. "plate1", "plate2", etc.) on which the sample corresponding to each .fcs file was analyzed during data acquisition. 
+* **patient_id -** Optional. The name of the patient to whom each .fcs file corresponds.
+* **condition -** Optional. The stimulation condition corresponding to each .fcs file (i.e. "basal", "IL-3", etc.).
+* **population -**  Optional. The cell population contained in each .fcs file (i.e. "T-cells", "B-cells", etc.). 
+* **validation -** Optional. The name of an .fcs file that  
 
-All of these fields are required for `cytofin_homogenize()` to work; "NA" can be recorded for any/all columns that don't apply to the experimental design of the files being analyzed (for example, if no stimulation conditions were used in the studies being integrated, enter "NA" for each element of the `condition` column). The `cytofin_generate_metadata_template` function is provided to generate an example metadata .csv file filled with dummy example data:
+Importantly, only the fields marked as "required" are needed for `cytofin_homogenize()` to work; "NA" can be recorded for any/all optional columns that don't apply to the experimental design of the files being analyzed (for example, if no stimulation conditions were used in the studies being integrated, enter "NA" for each element of the `condition` column). Alternatively, these columns can be omitted from the metadata table entirely. The `cytofin_generate_metadata_template` function is provided to generate an example metadata .csv file filled with dummy example data in a location specified by the user:
 
 ```{r, eval = FALSE}
 # specify the path where you'd like to store the template file
-my_path <- file.path("~", "Desktop", "template_folder", "metadata_template.csv")
+my_path <- file.path("~", "Desktop", "template_folder")
 
 # generate the template file, which then can be edited manually 
 cytofin_generate_metadata_template(template_path = my_path)

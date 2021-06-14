@@ -4,7 +4,7 @@
 #'
 #' @param control_metadata_path metadata table of anchor CyTOF files (.fcs) 
 #' (must be in the current directory).
-#' @param anchor_statistics RData object containing anchor referene statistics 
+#' @param anchor_statistics .rds object containing anchor reference statistics 
 #' (must be in the current directory).
 #' @param sample_metadata_path metadata table of homogenized CyTOF files 
 #' (.fcs) (must be in the current directory).
@@ -19,6 +19,7 @@
 #' (meanshift, meanshift_bulk, variance, z_score, or beadlike).
 #'
 #' @return normalized files with specified panel
+#' 
 #' 
 #' @export
 cytofin_normalize <-

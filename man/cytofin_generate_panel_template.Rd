@@ -4,9 +4,16 @@
 \alias{cytofin_generate_panel_template}
 \title{Generate a template for a cytofin reference panel file}
 \usage{
-cytofin_generate_panel_template(template_path = getwd())
+cytofin_generate_panel_template(
+  file_name = "template_panel_info.csv",
+  template_path = getwd()
+)
 }
 \arguments{
+\item{file_name}{A string representing the name of the .csv file to be
+saved in the directory specified by \code{template_path}. Defaults to
+"template_panel_info.csv"}
+
 \item{template_path}{File path or connection where the template file should be
 written. Defaults to the current working directory}
 }
@@ -15,12 +22,15 @@ written. Defaults to the current working directory}
 (with the correct columns and dummy example data) in a specified location.
 }
 \examples{
+
 # specify the path where you'd like to store the template file
-my_path <- 
-    file.path("~", "Desktop", "template_folder", 
-              "panel_template.csv")
+my_name <- "panel_template.csv"
+my_path <- file.path("~", "Desktop", "template_folder")
 
 # generate the template file, which then can be edited manually 
-cytofin_generate_panel_template(template_path = my_path)
+cytofin_generate_panel_template(
+   file_name = my_name, 
+   template_path = my_path
+)
 
 }

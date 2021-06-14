@@ -3,7 +3,11 @@
 #' `cytofin_generate_metadata_template` creates a template metadata .csv file 
 #' (with the correct columns and dummy example data) in a specified location. 
 #'
-#' @param template_path File path or connection where the template file should be 
+#' @param file_name A string representing the name of the .csv file to be 
+#' saved in the directory specified by `template_path`. Defaults to 
+#' "template_metadata.csv"
+#'
+#' @param template_path A file path or connection where the template file should be 
 #' written. Defaults to the current working directory
 #'
 #' 
@@ -11,14 +15,21 @@
 #'
 #' @examples
 #' # specify the path where you'd like to store the template file
-#' my_path <- 
-#'     file.path("~", "Desktop", "template_folder", 
-#'               "metadata_template.csv")
+#' my_name <- "metadata_template.csv"
+#' my_path <- file.path("~", "Desktop", "template_folder")
+#'     
 #' 
 #' # generate the template file, which then can be edited manually 
-#' cytofin_generate_metadata_template(template_path = my_path)
+#' cytofin_generate_metadata_template(
+#'    file_name = my_name, 
+#'    template_path = my_path
+#' )
 #' 
-cytofin_generate_metadata_template <- function(template_path = getwd()) { 
+cytofin_generate_metadata_template <- 
+  function(
+    file_name = "template_metadata.csv", 
+    template_path = getwd()
+  ) { 
   
   #create output data.frame
   output_frame <- 
@@ -38,7 +49,7 @@ cytofin_generate_metadata_template <- function(template_path = getwd()) {
   
   readr::write_csv(
     x = output_frame, 
-    file = template_path
+    file = file.path(template_path, file_name)
   )
   
 }
@@ -49,6 +60,10 @@ cytofin_generate_metadata_template <- function(template_path = getwd()) {
 #' `cytofin_generate_panel_template` creates a template reference panel .csv file 
 #' (with the correct columns and dummy example data) in a specified location. 
 #'
+#' @param file_name A string representing the name of the .csv file to be 
+#' saved in the directory specified by `template_path`. Defaults to 
+#' "template_panel_info.csv"
+#'
 #' @param template_path File path or connection where the template file should be 
 #' written. Defaults to the current working directory
 #'
@@ -56,32 +71,38 @@ cytofin_generate_metadata_template <- function(template_path = getwd()) {
 #' @export
 #'
 #' @examples
+#' 
 #' # specify the path where you'd like to store the template file
-#' my_path <- 
-#'     file.path("~", "Desktop", "template_folder", 
-#'               "panel_template.csv")
+#' my_name <- "panel_template.csv"
+#' my_path <- file.path("~", "Desktop", "template_folder")
 #' 
 #' # generate the template file, which then can be edited manually 
-#' cytofin_generate_panel_template(template_path = my_path)
+#' cytofin_generate_panel_template(
+#'    file_name = my_name, 
+#'    template_path = my_path
+#' )
 #' 
-cytofin_generate_panel_template <- function(template_path = getwd()) { 
-  
+cytofin_generate_panel_template <- 
+  function(
+    file_name = "template_panel_info.csv", 
+    template_path = getwd()
+  ) { 
+    
   # TO DO: Give a more compelling example of markers and their regex
   #create output data.frame
   output_frame <- 
     data.frame(
-      desc = c("Time", "Event_length", "(Pd102)Di", "(Pd104)Di"), 
-      range = c("Time", "Event_length", "marker_name_1", "marker_name_2"),
-      metal_pattern = c("[Tt]ime", "ength", "Pd102", "Pd104"), 
+      metal_name = c("Time", "Event_length", "(Pd102)Di", "(Pd104)Di"), 
+      antigen_name = c("Time", "Event_length", "marker_name_1", "marker_name_2"),
       antigen_pattern = c("[Tt]ime", "ength", "regex_1", "regex_2"), 
-      Lineage = c(0, 0, 1, 1), 
-      Functional = c(0, 0, 0, 1), 
-      General = c(0, 1, 1, 1)
+      lineage = c(0, 0, 1, 1), 
+      functional = c(0, 0, 0, 1), 
+      general = c(0, 1, 1, 1)
     )
   
   readr::write_csv(
     x = output_frame, 
-    file = template_path
+    file = file.path(template_path, file_name)
   )
   
 }

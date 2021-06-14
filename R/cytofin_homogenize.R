@@ -60,7 +60,8 @@ cytofin_homogenize <-
     panel_path, 
     input_data_path, 
     output_data_path, 
-    verbose = FALSE) 
+    verbose = FALSE
+  ) 
   {
     
     # create output directory for homogenized .fcs files

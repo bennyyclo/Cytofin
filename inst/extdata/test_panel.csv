@@ -1,4 +1,4 @@
-desc,range,metal_pattern,antigen_pattern,Lineage,Functional,General
+metal_name,antigen_name,metal_pattern,antigen_pattern,lineage,functional,general
 Time,Time,[Tt]ime,[Tt]ime,0,0,1
 Event_length,Event_length,ength,ength,0,0,1
 (Pd102)Di,BC1,Pd102,BC1,0,0,1
