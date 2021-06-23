@@ -10,7 +10,7 @@
 #' The following columns should be present: `filename`,
 #' `cohort`, `plate_number`, `patient_id`, `condition`, `is_anchor`, `validation`,
 #'  `universal_var`, `anchor_mean`, `anchor_var`, `mean_b4norm`, `var_b4norm`,
-#'  `mean_norm`, `var_norm`.
+#'  `mean_norm`, `var_norm`, `mean_ctr_norm`, `var_ctr_norm`.
 #'
 #' @param val_path The folder directory containing validation (i.e. bead-normalized)
 #' .fcs files corresponding to the input .fcs files in the metadata table. (Optional).
@@ -60,15 +60,6 @@
 #' @export
 #'
 cytofin_make_plots <- function(normalization_result, val_path = "none") {
-  
-  # #read metadata table
-  # md <- cytofin_read_metadata(metadata_path)
-  
-  # # separate metadata for anchor samples
-  # md_control <- dplyr::filter(md, is_anchor == 1)
-  
-  # # read in standardized panel
-  # ref_panel <- cytofin_read_panel_info(panel_path = panel_path)
   
   # extract needed values from the normalization_result attributes
   all_markers <- attr(normalization_result, which = "all_markers")
@@ -207,14 +198,39 @@ cytofin_make_plots <- function(normalization_result, val_path = "none") {
         xlim = c(0, len),
         ylim = c(-5, 10)
       )
+      
       par(new = TRUE)
-      plot(mean_norm[all_markers], col = "darkgreen", xlab = "antigen", ylab = "overlay expression (mean)", xlim = c(0, len), ylim = c(-5, 10))
+      plot(
+        mean_norm[all_markers], 
+        col = "darkgreen", 
+        xlab = "antigen", 
+        ylab = "overlay expression (mean)", 
+        xlim = c(0, len), 
+        ylim = c(-5, 10)
+      )
+      
       par(new = TRUE)
-      plot(mean_val[all_markers], col = "purple", xlab = "antigen", ylab = "overlay expression (mean)", xlim = c(0, len), ylim = c(-5, 10))
+      plot(
+        mean_val[all_markers], 
+        col = "purple", 
+        xlab = "antigen", 
+        ylab = "overlay expression (mean)", 
+        xlim = c(0, len), 
+        ylim = c(-5, 10)
+      )
       par(new = TRUE)
       legend(1, 10, legend = c("original", "normalized", "validation"), col = c("green", "darkgreen", "purple"), lty = 1:2, cex = 0.8)
+      
     } else {
-      plot(mean_b4norm[all_markers], col = "green", xlab = "antigen", ylab = "overlay expression (mean)", xlim = c(0, len), ylim = c(-5, 10))
+      
+      plot(
+        mean_b4norm[all_markers], 
+        col = "green", 
+        xlab = "antigen", 
+        ylab = "overlay expression (mean)", 
+        xlim = c(0, len), 
+        ylim = c(-5, 10)
+      )
       par(new = TRUE)
       plot(mean_norm[all_markers], col = "darkgreen", xlab = "antigen", ylab = "overlay expression (mean)", xlim = c(0, len), ylim = c(-5, 10))
       par(new = TRUE)
@@ -321,7 +337,13 @@ cytofin_make_plots <- function(normalization_result, val_path = "none") {
       )
       
       par(new = TRUE)
-      legend(1, 10, legend = c("original", "normalized"), col = c("green", "darkgreen"), lty = 1:2, cex = 0.8)
+      legend(
+        1, 
+        10, 
+        legend = c("original", "normalized"), 
+        col = c("green", "darkgreen"), 
+        lty = 1:2, cex = 0.8
+      )
     }
   }
 }

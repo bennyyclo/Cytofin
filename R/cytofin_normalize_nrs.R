@@ -50,7 +50,7 @@
 #' Defaults to 0.2. 
 #' 
 #' @param nchannels An integer representing the number of most stable channels to
-#' use during batch normalization. Defaults to 5.
+#' use during batch normalization. Defaults to 3.
 #' 
 #' @param make_plot A boolean value indicating if a plot depicting the non-
 #' redundancy scores of each marker in each .fcs file being batch normalized
@@ -100,7 +100,7 @@ cytofin_normalize_nrs <-
     output_prefix = "normalized_", 
     shift_factor = 0, 
     scale_factor = 0.2,
-    nchannels = 5, 
+    nchannels = 3, 
     make_plot = FALSE
   ) {
     

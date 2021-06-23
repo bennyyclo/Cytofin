@@ -1,4 +1,17 @@
 
+-   [cytofin](#cytofin)
+    -   [Installation](#installation)
+    -   [Usage](#usage)
+        -   [CyTOF data homogenization](#cytof-data-homogenization)
+        -   [CyTOF batch normalization](#cytof-batch-normalization)
+            -   [Batch normalization using external anchors
+                (cytofin\_normalize)](#batch-normalization-using-external-anchors-cytofin_normalize)
+                -   [1. Anchor preparation](#1-anchor-preparation)
+                -   [2. Batch normalization](#2-batch-normalization)
+            -   [Batch normalization using internal anchors
+                (cytofin\_normalize\_nrs)](#batch-normalization-using-internal-anchors-cytofin_normalize_nrs)
+    -   [Additional Information](#additional-information)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # cytofin
@@ -16,15 +29,19 @@ following tasks:
     across multiple CyTOF datasets requires **homogenization,** the
     process of aligning each dataset’s antibody panels so that they can
     be analyzed together. In CytofIN, data homogenization (i.e. panel
-    alignment) is performed with the `cytofin_homogenize()` function
-    that leverages user-provided panel information to combine datasets.
+    alignment) is performed with the `cytofin_homogenize` function that
+    leverages user-provided panel information to combine datasets.
 -   **Dataset normalization** - Combined analysis of multiple CyTOF
     datasets is likely to be confounded by dataset-to-dataset batch
     effects due to differences in instrumentation and experimental
     protocols between groups. To normalize multiple CyTOF datasets with
     respect to these batch effects, CytofIN provides 3 functions:
-    `cytofin_prep_anchors()`, `cytofin_normalize()`, and
-    `cytofin_normalize_nrs()`.
+    `cytofin_prep_anchors`, `cytofin_normalize`, and
+    `cytofin_normalize_nrs`.
+-   **Visualization** - After batch normalization, the means and
+    standard deviations for each of the input .fcs files (as well as
+    their associated anchors) can be visualized using the
+    `cytofin_make_plots` function.
 
 The general CytofIn workflow unfolds in 3 steps. First, users align the
 panels of the CyTOF datasets being integrated using
@@ -88,11 +105,11 @@ columns (all of which will be converted to character vectors):
 -   **validation -** Optional. The name of the
     [bead-normalized](https://pubmed.ncbi.nlm.nih.gov/23512433/) .fcs
     file corresponding to each input file listed in the `filename`
-    column (per the gold standard in CyTOF batch correction). Most users
-    will ignore this column (because bead-normalized data will not be
-    available), but it can be used to validate the results of the
-    CytofIn batch normalization algorithms if bead-normalized data are
-    available.
+    column (per gold-standard batch normalization procedure in CyTOF
+    batch correction). Most users will ignore this column because
+    bead-normalized data will not be available, but it can be used to
+    validate the results of the CytofIn batch normalization algorithms
+    if bead-normalized data are available.
 
 Importantly, only the fields marked as “required” are needed for
 `cytofin_homogenize()` to work; “NA” can be recorded for any/all
@@ -128,7 +145,7 @@ following columns:
 -   **antigen\_pattern -** A regular expression used to match antigen
     names that may differ slightly across different .fcs files. For
     example, the regular expression “(C\|c)(D\|d)45” will detect all of
-    the following channel names: “cd45”, “CD45”, “Cd45”, “cD45”.
+    the following channel names: “cd45”, “CD45”, “Cd45”, or “cD45”.
 -   **lineage -** A numeric vector representing whether or not a marker
     is a lineage marker (1 if yes; 0 otherwise).
 -   **functional -** A numeric vector representing whether or not a
@@ -156,7 +173,7 @@ cytofin_generate_panel_template(template_path = my_path)
 For many users, the most difficult part of filling out the consensus
 panel information table will be designing the regular expressions for
 the `antigen_pattern` column. However, in most cases the required
-regular expressions will be quite simple: For a primer on regular
+regular expressions will be quite simple; for a primer on regular
 expressions (and their use in the
 [`stringr`](https://stringr.tidyverse.org/) package) written by
 [RStudio](https://www.rstudio.com/about/), install the `stringr` package
@@ -244,7 +261,7 @@ list.files(output_data_path, pattern = ".fcs$")
 #> [11] "homogenized_SJ_Plate2_TB010950_Basal.fcs"
 ```
 
-### CyTOF batch normalization using external anchors
+### CyTOF batch normalization
 
 After dataset homogenization, **batch correction** (or **batch
 normalization**) can be performed across datasets. The following
@@ -256,38 +273,65 @@ schematic diagram illustrates how normalization is performed in
 TO DO: Fix a few things about this schematic diagram
 
 In words, CytofIn performs batch normalization though the use of
-**generalized anchors -** or \[definition of generalized anchors\] **-**
-that users identify on each CyTOF plate. To identify a sample as a
-generalized anchor in CytofIn, users must mark its row in the metadata
-table with a “1” in the `is_anchor` column. These anchors are used to
-define a **universal mean** and/or **universal variance** that represent
-the central tendency and dispersion, respectively, of the target
-distribution to which all samples will be batch corrected using the
-user’s choice from one of five batch correction functions.
+user-identified **anchors -** or \[TO DO: definition of anchors\]. These
+anchors can be either external (TO DO: which means this) or internal (TO
+DO: which means this). To batch normalize using external anchors (which
+is ideal when such anchors are available), use `cytofin_normalize`. To
+batch normalize using internal anchors (which is ideal when no external
+anchors are available), use `cytofin_normalize_nrs`.
 
-In other words, CytofIn’s batch normalization procedure has two steps:
+The use of both of these functions is detailed below.
+
+#### Batch normalization using external anchors (cytofin\_normalize)
+
+The `cytofin_normalize` uses user-identified external anchors on each
+CyTOF plate being integrated to correct batch effects on a
+plate-to-plate basis. One sample on each CyTOF barcoding plate should be
+chosen as that plate’s external anchor. In general, external anchors
+should be chosen based on which samples are the most biologically
+similar to one another from plate to plate. For example, if healthy,
+non-stimulated samples are included on each CyTOF plate being
+integrated, the only expected variability between these samples other
+than batch effects would be person-to-person variability. Thus, these
+samples are likely to be biologically similar to one another and are
+suitable to be chosen as external anchors. Alternatively, if a single
+patient or cell line was included on every CyTOF plate being integrated,
+the samples corresponding to that patient or cell line on each plate are
+would also be suitable as external anchor choices.
+
+Once users have identified 1 external anchor per plate for CytofIn data
+integration, users must mark its row in the metadata table with a “1” in
+the `is_anchor` column (all other samples should be marked with “0”).
+CytofIn then uses these anchors to define a **universal mean** and
+**universal variance** that represent the central tendency and
+dispersion, respectively, of the target distribution to which all
+samples will be batch corrected. This correction will be performed with
+the user’s choice from one of five batch correction functions.
+
+In short, CytofIn’s batch normalization procedure using external anchors
+has two steps:
 
 1.  Preparation of external anchors  
 2.  Application of a transformation function that performs the batch
     correction (of which `CytofIn` provides 5 options)
 
-We detail each of these steps below.
+We detail function calls for each of these steps below.
 
-#### 1. Anchor preparation:
+##### 1. Anchor preparation
 
 The `cytofin_prep_anchors` function concatenates the identified anchor
-files (one file per plate) and then calculates summary statistics that
-are used for batch correction in later steps of the pipeline. First,
-CytofIn calculates the mean and standard deviation of each channel in
-the homogenized dataset across all cells from samples identified as
-generalized anchors. These values represent the overall central tendency
-and dispersion, respectively, of each channel among the healthy control
-samples on each CyTOF plate and are thus termed the **universal means**
-and **universal variances** of the analysis. Accordingly, the universal
-mean and universal variance vectors will each have *g* elements, where
-*g* is the number of channels in the consensus antigen panel in the
-panel information table. The universal mean and universal variance
-vectors are used in the `meanshift`, `variance`, and `z-score` methods
+files and then calculates summary statistics that are used for batch
+correction in later steps of the pipeline. First, CytofIn calculates the
+mean and standard deviation of each channel in the homogenized dataset
+across all cells from samples identified as external anchors. These
+values represent the overall central tendency and dispersion,
+respectively, of each channel among the anchor samples on each CyTOF
+plate; thus, we call them the **universal means** and **universal
+variances** of the CytofIn integration. Accordingly, the universal mean
+and universal variance vectors will each have *g* elements, where *g* is
+the number of channels in the consensus antigen panel in the panel
+information table. The universal mean and universal variance vectors are
+used in the `meanshift`, `variance`, `z-score`, and `beadlike` methods
 of batch correction (see below).
 
 In addition, the mean of all of the elements of the universal mean
@@ -295,16 +339,17 @@ vector (i.e. the mean of all channel means) and the mean of all of the
 elements of the universal variance vector (i.e. the mean of all channel
 variances) are calculated. These values represent the central tendency
 and dispersion of antigen measurements in general among the healthy
-control samples on each CyTOF plate and are no longer channel-specific.
-Thus, we call them the *bulk mean* and *bulk variance*, as they are used
-in the `meanshift_bulk` batch correction method implemented in
-`cytofin_homogenize` (see below), which is not channel-specific.
+control samples on each CyTOF plate and are thus no longer
+channel-specific. Thus, we call them the *bulk mean* and *bulk
+variance*, and they are used in the `meanshift_bulk` batch correction
+method implemented in `cytofin_homogenize`.
 
+To calculate these values, we use the `cytofin_prep_anchors` function.
 `cytofin_prep_anchors` returns the universal mean vector, universal
-standard deviation vector, bulk mean, and bulk standard deviation as a
-`list()`. In addition, users are given an option to save these
-statistics as an .rds file in a specified directory in order to avoid
-performing redundant calculations in future analyses.
+variance vector, bulk mean, and bulk variance as a `list()`. In
+addition, users are given an option to save these statistics as an .rds
+file in a specified directory in order to avoid performing redundant
+calculations in future analyses.
 
 Specifically, `cytofin_prep_anchors` takes 4 required arguments:
 
@@ -404,21 +449,21 @@ Importantly, you only need to use `cytofin_prep_anchors` if you plan to
 batch normalize your .fcs files using external anchors identified on
 each plate (using `cytofin_normalize`). If you plan to batch normalize
 your .fcs files using non-redundancy scores from each sample’s most
-stable channels (using `cytofin_normalize_nrs`),
+stable channels (using `cytofin_normalize_nrs`), you do not need to run
+`cytofin_prep_anchors` first.
 
-#### 2. Batch correction
+##### 2. Batch normalization
 
-After the generalized anchors’ summary statistics are computed, batch
-correction can be performed using either `cytofin_normalize` or
-`cytofin_normalize_nrs`. These two functions perform batch correction in
-different ways, and which of them is most applicable to a given analysis
-will differ from user to user. We recommended that users try using both
-and then manually inspect/visualize the batch-corrected data in order to
-determine which method they prefer.
+After the anchors’ summary statistics are computed, batch correction
+using external anchors can be performed using either
+`cytofin_normalize`. This function can perform batch correction using 5
+different transformation functions (which we call “modes”). Which of
+these is most applicable to a given analysis will differ from user to
+user. We recommended that users try using both and then manually
+inspect/visualize the batch-corrected data in order to determine which
+method they prefer.
 
-##### cytofin\_normalize: Batch correction using external anchors on each plate
-
-To perform batch correction using external anchors identified on each
+To perform batch normalization using external anchors identified on each
 plate, use `cytofin_normalize`. This batch normalization strategy
 assumes that the anchors on each plate are relatively similar to one
 another, and it uses this similarity to adjust the marker expression
@@ -426,25 +471,49 @@ measurements on each plate based on how much each plate’s anchor differs
 from the other anchors. The `cytofin_normalize` function takes several
 required arguments:
 
--   Start
-
--   Start
-
--   Start
+-   `metadata_path`: A connection leading to an .xlsx or .csv file
+    containing a metadata table with information about each file to be
+    analyzed. This file should be identical to that used for
+    `cytofin_homogenize`.
+-   `panel_path`: A connection leading to an .xlsx or .csv file
+    containing information about the standardized antigen panel in the
+    homogenized dataset. This file should be identical to that used for
+    `cytofin_homogenize`.
+-   `anchor_statistics`: Either a list of numeric values produced by the
+    `cytofin_prep_anchors` function or a connection leading to an .rds
+    object containing anchor statistics.
+-   `input_data_path`: A connection to a directory containing the input
+    .FCS files to be batch normalized. In most cases, this will be the
+    directory to which the output .FCS files from `cytofin_homogenize`
+    were written.
+-   `output_data_path`: A connection to a directory where the output
+    (i.e. batch normalized) .FCS files will be written.
+-   `mode`: A string indicating which transformation function should be
+    used for batch normalization (“meanshift”, “meanshift\_bulk”,
+    “variance”, “z-score”, or “beadlike”).
 
 In addition to these required arguments, `cytofin_normalize` takes
 several optional arguments:
 
--   Start
+-   `input_prefix`: The string that was appended to the name of the raw
+    input .FCS files of `cytofin_homogenize` to create their
+    corresponding output file names. Defaults to “homogenized\_”.
 
--   Start
+-   `output_prefix`: The string to be appended to the name of each input
+    .FCS file to create the name of the corresponding output file
+    (post-homogenization). Defaults to “normalized\_”.
 
--   Start
+-   `shift_factor` and `scale_factor`: The scalar values *a* and *b*,
+    respectively, to be used in the hyperbolic arc-sine function used to
+    transform CyTOF ion counts according to the following equation:
+    `new_x <- asinh(a + b * x)`. `shift_factor` defaults to 0 and
+    `scale_factor` defaults to 0.2, which are customary values used by
+    most scientists in the CyTOF community.
 
 Using these arguments, a call to `cytofin_normalize` will perform the
-batch correction and save the output (i.e. normalized) .fcs files to the
-directory specified by `output_data_path`. An example function call is
-given here:
+batch correction and save the output (i.e. batch normalized) .FCS files
+to the directory specified by `output_data_path`. An example function
+call is given here:
 
 ``` r
 output_data_path <- 
@@ -463,11 +532,14 @@ norm_result <-
 #> anchor_prep' already exists
 ```
 
-\[Some description of the results that are returned by this function
-call\]
-
-\[some description of how these results can be used to make plots of the
-normalization results using `cytofin_make_plots`:
+When this function is called, it has two effects. The first is to save
+the batch-normalized output .FCS files to the `output_data_path`
+directory. The second is to return a data.frame that stores mean and
+variance information about each input file (as well as its associated
+anchor) both before and after normalization. This data.frame can be
+passed directly into the `cytofin_make_plots` function to return 8
+diagnostic plots per sample illustrating the quality of the
+normalization:
 
 ``` r
 # we make just the first plot for illustrative purposes
@@ -479,24 +551,46 @@ cytofin_make_plots(
 
 <img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />
 
-##### cytofin\_normalize\_nrs: Batch correction using stable channels (internal anchors) within each .fcs file
+#### Batch normalization using internal anchors (cytofin\_normalize\_nrs)
 
 ![Alt text](./images/Slide3.PNG?raw=true "Title")
 
-Description: In the event that the external references are not
-available, internal anchors can be used. Here, we identified the most
-stable channels as internal anchors using a PCA-based non-redundancy
-score (NRS). A minimal of three channels should be selected to establish
-an internal reference from which signals can be calibrated between CyTOF
-files.
+In the event that external anchors are not available, `CytofIn` can use
+“internal anchors” within each sample for batch normalization.
+Specifically, instead of defining a single external anchor for all the
+samples on a given plate like `cytofin_normalize`, the
+`cytofin_normalize_nrs` function identifies the most stable channels in
+the dataset overall and uses them as internal anchors that are used to
+batch normalize all other channels from sample-to-sample. To identify
+the most stable channels in the combined dataset, CytofIn uses a
+PCA-based non-redundancy score (NRS) as described before (see
+[here](https://pubmed.ncbi.nlm.nih.gov/26095251/)). A minimum of 3
+channels should be selected to establish an internal reference from
+which signals can be calibrated between CyTOF files.
 
-Function definition:
+To do so, `cytofin_normalize_nrs` takes several of the same arguments as
+`cytofin_normalize`, defined as above: `metadata_path`, `panel_path`,
+`input_data_path`, `output_data_path`, `input_prefix`, `output_prefix`,
+`shift_factor`, and `scale_factor`. In addition, it takes the following
+optional arguments:
+
+-   `nchannels`: An integer representing the number of “most stable”
+    (i.e. with the lowest non-redundancy scores) channels that should be
+    used for batch normalization. Defaults to 3.
+
+-   `make_plot`: A boolean value representing if, in addition to its
+    other effects, `cytofin_normalize_nrs` should return a plot
+    illustrating the distribution of non-redundancy scores for each
+    channel among all .fcs files being batch normalized. Defaults to
+    FALSE.
+
+These arguments can be used in a function call as follows:
 
 ``` r
 # local paths
 metadata_path <- 
   file.path("~", "GitHub", "cytofin", "inst", "extdata", "test_metadata_raw.csv")
-panel_path <- panel_path <- 
+panel_path <-  
   here::here("inst", "extdata", "test_panel.csv")
 input_data_path <- 
   file.path("~", "temp", "out_test")
@@ -510,9 +604,69 @@ norm_result_nrs <-
     panel_path = panel_path, 
     input_data_path = input_data_path, 
     output_data_path = output_data_path, 
-    nchannels = 5, 
+    nchannels = 3, 
     make_plot = FALSE
   )
 #> Warning in dir.create(output_data_path): '/Users/tkeyes/temp/out_test/
 #> final_output' already exists
+```
+
+Just like `cytofin_normalize` above, `cytofin_normalize_nrs` has several
+effects. First, it writes batch-normalized .FCS files to
+`output_data_path` and makes a plot depicting sample-wise and
+channel-wise non-redundancy scores according to the value of
+`make_plot`. In addition, it returns a data.frame that can be passed
+into `cytofin_make_plots` to make diagnostic plots regarding the batch
+normalization procedure:
+
+``` r
+# show only 1 set of plots for illustrative purposes
+cytofin_make_plots(normalization_result = norm_result_nrs[7,])
+```
+
+<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
+
+## Additional Information
+
+For questions about the `CytofIn` R package, please email
+<kardavis@stanford.edu> or open a GitHub issue
+[here](https://github.com/bennyyclo/Cytofin).
+
+``` r
+# session information for rendering this README file
+sessionInfo()
+#> R version 4.0.3 (2020-10-10)
+#> Platform: x86_64-apple-darwin17.0 (64-bit)
+#> Running under: macOS Big Sur 10.16
+#> 
+#> Matrix products: default
+#> BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+#> LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+#> 
+#> locale:
+#> [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#> [1] cytofin_0.0.0.9000
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] Rcpp_1.0.6          highr_0.9           compiler_4.0.3     
+#>  [4] pillar_1.6.0        cytolib_2.2.1       tools_4.0.3        
+#>  [7] digest_0.6.27       evaluate_0.14       lifecycle_1.0.0    
+#> [10] tibble_3.1.0        pkgconfig_2.0.3     rlang_0.4.10       
+#> [13] DBI_1.1.1           yaml_2.2.1          parallel_4.0.3     
+#> [16] xfun_0.22           dplyr_1.0.5         stringr_1.4.0      
+#> [19] knitr_1.32          hms_1.0.0           generics_0.1.0     
+#> [22] S4Vectors_0.28.1    vctrs_0.3.7         rprojroot_2.0.2    
+#> [25] stats4_4.0.3        tidyselect_1.1.0    here_1.0.1         
+#> [28] glue_1.4.2          Biobase_2.50.0      R6_2.5.0           
+#> [31] fansi_0.4.2         rmarkdown_2.7       readr_1.4.0        
+#> [34] tidyr_1.1.3         RProtoBufLib_2.2.0  purrr_0.3.4        
+#> [37] magrittr_2.0.1      matrixStats_0.58.0  htmltools_0.5.1.1  
+#> [40] ellipsis_0.3.1      BiocGenerics_0.36.1 assertthat_0.2.1   
+#> [43] flowCore_2.2.0      utf8_1.2.1          stringi_1.5.3      
+#> [46] RcppParallel_5.1.2  crayon_1.4.1
 ```

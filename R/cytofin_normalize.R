@@ -27,6 +27,10 @@
 #' @param output_data_path A folder directory to which the output (i.e. 
 #' batch normalized/batch corrected) .fcs files should be written.
 #' 
+#' @param mode A string indicating which transformation function should be used 
+#' for batch normalization ("meanshift", "meanshift_bulk", "variance", "z_score", 
+#' or "beadlike").
+#' 
 #' @param input_prefix The string that was appended to the name of the input files 
 #' of `cytofin_homogenize` to create their corresponding output file names. 
 #' Defaults to "homogenized_".
@@ -35,10 +39,6 @@
 #' to create the name of the corresponding output file (post-homogenization). 
 #' Defaults to "normalized_" (e.g. an input file named "file1.fcs" will correspond to 
 #' the output file "normalized_file1.fcs" saved in `output_data_path`).
-#' 
-#' @param mode A string indicating which transformation function should be used 
-#' for batch normalization ("meanshift", "meanshift_bulk", "variance", "z_score", 
-#' or "beadlike").
 #' 
 #' @param shift_factor The scalar value `a` in the following equation used to 
 #' transform CyTOF raw data ion counts using the hyperbolic arc-sine function:  
@@ -95,9 +95,9 @@ cytofin_normalize <-
     anchor_statistics, 
     input_data_path,
     output_data_path,
+    mode = c("meanshift", "meanshift_bulk", "variance", "z_score", "beadlike"),
     input_prefix = "homogenized_", 
     output_prefix = "normalized_", 
-    mode = c("meanshift", "meanshift_bulk", "variance", "z_score", "beadlike"),
     shift_factor = 0, 
     scale_factor = 0.2
   ) {
