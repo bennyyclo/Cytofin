@@ -2,55 +2,78 @@
 % Please edit documentation in R/cytofin_prep_anchors.R
 \name{cytofin_prep_anchors}
 \alias{cytofin_prep_anchors}
-\title{Prepare CyTOF controls for batch normalization}
+\title{Prepare CyTOF controls for batch normalization across plates}
 \usage{
 cytofin_prep_anchors(
   metadata_path,
   panel_path,
   input_data_path,
-  output_path = "none"
+  input_prefix = "homogenized_",
+  output_path = "none",
+  shift_factor = 0,
+  scale_factor = 0.2
 )
 }
 \arguments{
 \item{metadata_path}{A file path leading to an .xlsx or .csv file
 containing a table of CyTOF file (.fcs file) names. Columns should include
 \code{filename}, \code{cohort}, \code{plate_number}, \code{patient_id}, \code{condition}, \code{population},
-and \code{validation}. TO DO: Change the names of these columns to more descriptive
-names and make sure that they are all actually needed.
-TO DO: Add to the vignette how users are supposed to identify which rows from
-the large metadata table should be used as anchors.
+and \code{validation}.
+
 See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
 \item{panel_path}{A file path leading to an .xlsx or .csv file containing
 a table of standardized antigen panel information. Columns should include
-\code{desc}, \code{range}, \code{metal_pattern}, \code{antigen_pattern}, \code{Lineage}, \code{Functional},
-and \code{General}. TO DO: Change the names of these columns to more descriptive
-names and make sure that they are all actually needed.
+\code{metal_name}, \code{antigen_name}, \code{antigen_pattern}, \code{lineage}, \code{functional},
+and \code{general}.
+
 See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
 \item{input_data_path}{A folder directory containing the input CyTOF files
-to be prepped for normalization}
+to be prepped for normalization. These files should already be homogenized,
+and in most cases this will be the directory to which the output
+.fcs files from \code{cytofin_homogenize} were written.}
+
+\item{input_prefix}{The string that was appended to the name of the input files
+of \code{cytofin_homogenize} to create their corresponding output file names.
+Defaults to "homogenized_".}
 
 \item{output_path}{A file path specifying where to save the output .rds
 file containing the statistics calculated from this step and the concatenated
 .FCS files containing all cells from the generalized anchor samples. Defaults
 to "none", in which case no files are saved.}
+
+\item{shift_factor}{The scalar value \code{a} in the following equation used to
+transform CyTOF raw data ion counts using the hyperbolic arc-sine function:
+
+\code{new_x <- asinh(a + b*x)}.
+
+Defaults to 0.}
+
+\item{scale_factor}{The scalar value \code{b} in the following equation used to
+transform CyTOF raw data ion counts using the hyperbolic arc-sine function:
+
+\code{new_x <- asinh(a + b*x)}.
+
+Defaults to 0.2.}
 }
 \value{
 a \code{list()} of summary statistics with the following elements:
 \itemize{
-\item var_uni:  a named numeric vector in which each entry corresponds to the
+\item \strong{universal_var}:  a named numeric vector in which each entry corresponds to the
 universal variance of an antigen channel in the homogenized dataset
-\item mean_uni:  a named numeric vector in which each entry corresponds to the
+\item \strong{universal_mean}:  a named numeric vector in which each entry corresponds to the
 universal mean of an antigen channel in the homogenized dataset
-\item var_uni_mean:  The mean of all the channel-specific universal variances
-in \code{var_uni} (a scalar value)
-\item mean_uni_mean:  The mean of all the channel-specific universal means
-in \code{mean_uni} (a scalar value)
+\item \strong{bulk_var}:  The mean of all the channel-specific universal variances
+in \code{universal_var} (a scalar value)
+\item \strong{bulk_mean}:  The mean of all the channel-specific universal means
+in \code{universal_mean} (a scalar value)
 }
 }
 \description{
-This function calculates reference statistics for CyTOF data normalization by
-finding the universal means and universal variances of the generalized
-anchors identified in the metadata file at \code{metadata_path}.
+This function calculates reference statistics needed for CytofIn batch normalization.
+Specifically, it calculates the universal mean and universal variance vectors
+of the generalized anchors identified in the metadata file at \code{metadata_path};
+in addition, it calculates the non-channel-specific bulk mean and bulk variance
+of the generalized anchors.
 }

@@ -1,49 +1,120 @@
-#' Normalize CyTOF data panel
+#' Batch normalize CyTOF plates from heterogeneous sources using external anchors
 #'
-#' This function normalize CyTOF data panel using external anchors.
+#' This function batch normalizes CyTOF data from multiple plates (from one or more 
+#' experimental cohorts) using external (i.e. "generalized") anchors.
 #'
-#' @param control_metadata_path metadata table of anchor CyTOF files (.fcs) 
-#' (must be in the current directory).
-#' @param anchor_statistics .rds object containing anchor reference statistics 
-#' (must be in the current directory).
-#' @param sample_metadata_path metadata table of homogenized CyTOF files 
-#' (.fcs) (must be in the current directory).
-#' @param panel_path standardized antigen panel table file (.xlsx/.csv)
-#' (must be in the current directory).
-#' @param input_path folder directory containing input homogenized CyTOF 
-#' data file.
-#' @param val_path folder directory containing validation homogenized CyTOF 
-#' data file (optional).
-#' @param output_path folder directory containing output normalized CyTOF data file.
-#' @param mode transformation function used for normalization 
-#' (meanshift, meanshift_bulk, variance, z_score, or beadlike).
-#'
-#' @return normalized files with specified panel
+#' @param metadata_path A filepath leading to an .xlsx or .csv file 
+#' containing a table of CyTOF file (.fcs file) names. Columns should include
+#' `filename`, `cohort`, `plate_number`, `patient_id`, `condition`, `is_anchor`, 
+#' and `validation`. 
 #' 
+#' See the vignette for details: \code{vignette("help", package = "cytofin")} 
+#' 
+#' @param panel_path A file path leading to an .xlsx or .csv file containing 
+#' a table of standardized antigen panel information. Columns should include 
+#' `metal_name`, `antigen_name`, `antigen_pattern`, 
+#' `lineage`, `functional`, and `general`. 
+#' 
+#' See the vignette for details: \code{vignette("help", package = "cytofin")}
+#' 
+#' @param anchor_statistics a list produced by the `cytofin_prep_anchors`
+#' function or the file path to an .rds object containing anchor reference statistics.
+#' 
+#' @param input_data_path A folder directory containing the input CyTOF files
+#' to be normalized. In most cases, this will be the directory to which the output
+#' .fcs files from `cytofin_homogenize` were written.
+#' 
+#' @param output_data_path A folder directory to which the output (i.e. 
+#' batch normalized/batch corrected) .fcs files should be written.
+#' 
+#' @param input_prefix The string that was appended to the name of the input files 
+#' of `cytofin_homogenize` to create their corresponding output file names. 
+#' Defaults to "homogenized_".
+#' 
+#' @param output_prefix A string to be appended to the name of each input file 
+#' to create the name of the corresponding output file (post-homogenization). 
+#' Defaults to "normalized_" (e.g. an input file named "file1.fcs" will correspond to 
+#' the output file "normalized_file1.fcs" saved in `output_data_path`).
+#' 
+#' @param mode A string indicating which transformation function should be used 
+#' for batch normalization ("meanshift", "meanshift_bulk", "variance", "z_score", 
+#' or "beadlike").
+#' 
+#' @param shift_factor The scalar value `a` in the following equation used to 
+#' transform CyTOF raw data ion counts using the hyperbolic arc-sine function:  
+#'    
+#'    `new_x <- asinh(a + b * x)`.
+#' 
+#' Defaults to 0. 
+#' 
+#' @param scale_factor The scalar value `b` in the following equation used to 
+#' transform CyTOF raw data ion counts using the hyperbolic arc-sine function:  
+#'    
+#'    `new_x <- asinh(a + b * x)`.
+#' 
+#' Defaults to 0.2. 
+#'
+#' @return Batch-normalized .fcs files are saved in the directory specified by 
+#' `output_data_path`. 
+#' 
+#' In addition, a data.frame containing information about 
+#' each input .fcs file (that can be used for plotting with `cytofin_make_plots`)
+#' is returned with the following columns: 
+#'    * All of the columns in the input metadata table (located at `metadata_path`)
+#'    * __universal_mean__: the universal mean vector to which all files are adjusted 
+#'    (will be identical for all input .fcs files)
+#'    * __universal_var__: the universal mean vector to which all files are adjusted
+#'    (will be identical for all input .fcs files)
+#'    * __anchor_mean__: the mean (across all cells) vector for the anchor file associated
+#'    with each input .fcs file (i.e. the anchor located on the same plate as the 
+#'    input .fcs file) before batch normalization.
+#'    * __anchor_var__: the variance (across all cells) vector for the anchor file associated
+#'    with each input .fcs file (i.e. the anchor located on the same plate as the 
+#'    input .fcs file)
+#'    * __mean_b4norm__: the mean (across all cells) vector of the input .fcs file 
+#'    before batch normalization. 
+#'    * __var_b4norm__: the variance (across all cells) vector of the input .fcs file 
+#'    before batch normalization. 
+#'    * __mean_norm__: the mean (across all cells) vector of the input .fcs file 
+#'    after batch normalization. 
+#'    * __var_norm__: the variance (across all cells) vector of the input .fcs file 
+#'    after batch normalization.
+#'    * __anchor_mean_norm__: the mean (across all cells) vector for the anchor file associated
+#'    with each input .fcs file (i.e. the anchor located on the same plate as the 
+#'    input .fcs file) after batch normalization.
+#'    * __anchor_var_norm__: the variance (across all cells) vector for the anchor file associated
+#'    with each input .fcs file (i.e. the anchor located on the same plate as the 
+#'    input .fcs file) after batch normalization.
 #' 
 #' @export
+#' 
 cytofin_normalize <-
   function(
-    control_metadata_path, 
+    metadata_path,
+    panel_path,
     anchor_statistics, 
-    sample_metadata_path, 
-    panel_path, 
-    input_path, 
-    val_path = "none",
-    output_path, 
-    mode = c("meanshift", "meanshift_bulk", "variance", "z_score", "beadlike")
+    input_data_path,
+    output_data_path,
+    input_prefix = "homogenized_", 
+    output_prefix = "normalized_", 
+    mode = c("meanshift", "meanshift_bulk", "variance", "z_score", "beadlike"),
+    shift_factor = 0, 
+    scale_factor = 0.2
   ) {
     
     # create output directory
-    dir.create(output_path)
+    dir.create(output_data_path)
     
-    #read metadata tables
-    md_control <- cytofin_read_metadata(control_metadata_path)
-    md <- cytofin_read_metadata(sample_metadata_path)
+    #read metadata table
+    md <- cytofin_read_metadata(metadata_path)
     
+    # separate metadata for anchor samples
+    md_control <- dplyr::filter(md, is_anchor == 1)
+
     # if anchor_statistics is a file path
     if (is.character(anchor_statistics)) { 
       anchor_statistics_list <- readr::read_rds(anchor_statistics)
+      # else if anchor_statistics is a list 
     } else if (is.list(anchor_statistics)) { 
       anchor_statistics_list <- anchor_statistics
     } else { 
@@ -51,84 +122,66 @@ cytofin_normalize <-
     }
     
     # extract needed values from anchor_statistics_list
-    var_uni <- anchor_statistics_list$var_uni
-    mean_uni <- anchor_statistics_list$mean_uni
-    var_uni_mean <- anchor_statistics_list$var_uni_mean
-    mean_uni_mean <- anchor_statistics_list$mean_uni_mean
+    universal_var <- anchor_statistics_list$universal_var
+    universal_mean <- anchor_statistics_list$universal_mean
+    bulk_var <- anchor_statistics_list$bulk_var
+    bulk_mean <- anchor_statistics_list$bulk_mean
     
     # read in standardized panel
     ref_panel <- cytofin_read_panel_info(panel_path = panel_path)
     
-    # TO DO: are all of these values used somewhere???
-    lineage_markers <- as.character(ref_panel$desc[ref_panel$Lineage == 1])
-    functional_markers <- as.character(ref_panel$desc[ref_panel$Functional == 1])
+    # compile list of all markers to keep during analysis
+    lineage_markers <- 
+      as.character(ref_panel$metal_name[ref_panel$lineage == 1])
+    
+    functional_markers <- 
+      as.character(ref_panel$metal_name[ref_panel$functional == 1])
+    
     all_markers <- c(lineage_markers, functional_markers)
     
     # create transformation functions
     norm_1 <- function(x) {
-      y <- mean_uni[all_markers]
+      y <- universal_mean[all_markers]
       z <- x
       m <- match(names(y), names(x))
-      z[m] <- z[m] - mean_ctr[m] + mean_uni[m]
+      z[m] <- z[m] - anchor_mean[m] + universal_mean[m]
       return(z)
     } #meanshift
     
     norm_2 <- function(x) {
-      y <- mean_uni[all_markers]
+      y <- universal_mean[all_markers]
       z <- x
       m <- match(names(y), names(x))
-      z[m] <- z[m] - mean(mean_ctr[m]) + mean(mean_uni[m])
+      z[m] <- z[m] - mean(anchor_mean[m]) + mean(universal_mean[m])
       return(z)
     } #meanshift bulk
     
     norm_3 <- function(x) {
-      y <- mean_uni[all_markers]
+      y <- universal_mean[all_markers]
       z <- x
       m <- match(names(y), names(x))
-      z[m] <- (z[m] - mean_ctr[m] + mean_uni[m])*sqrt(var_uni[m])/sqrt(var_ctr[m])
+      z[m] <- 
+        (z[m] - anchor_mean[m] + universal_mean[m]) * sqrt(universal_var[m])/sqrt(anchor_var[m])
       return(z)
     } #variance
     
     norm_4 <- function(x) {
-      y <- mean_uni[all_markers]
+      y <- universal_mean[all_markers]
       z <- x
       m <- match(names(y), names(x))
-      z[m] <- (z[m] - mean_ctr[m])*sqrt(var_uni[m])/sqrt(var_ctr[m]) + mean_uni[m]
+      z[m] <- 
+        (z[m] - anchor_mean[m]) * sqrt(universal_var[m])/sqrt(anchor_var[m]) + universal_mean[m]
       return(z)
     } #z-score
     
     norm_5 <- function(x) {
-      y <- mean_uni[all_markers]
+      y <- universal_mean[all_markers]
       z <- x
       m <- match(names(y), names(x))
-      z[m] <- z[m]*lm(mean_uni[m]~mean_ctr[m])$coefficient[[2]]
+      z[m] <- z[m] * lm(universal_mean[m] ~ anchor_mean[m])$coefficient[[2]]
       return(z)
     } #beadlike
-    
-    
-    # Define a function for arsinh transformation (based on definition from Nikolay).
-    # TO DO: Doesn't this just get rewritten later before it's ever used???
-    asinhNik <- function(value) {
-      value <- value - 1
-      # TO DO: Why use a for-loop instead of vectorize???
-      for(i in 1:length(value)) {
-        if((value[i] < 0) | is.na(value[i])) {
-          value[i] <- rnorm(1, mean = 0, sd = 0.01)
-        }
-      }  # can also use max(value, 0)
-      value <- value / 5
-      value <- asinh(value) 
-      return(value)
-    }
-    
-    # Reverses arsinh transformation with a cofactor of 5.
-    rev_asinh <- function(x) {
-      e.x <- exp(x)
-      rev.x <- (e.x^2 - 1) / (2 * e.x)
-      x <- rev.x * 5
-      return(x)
-    }
-    
+
     # find the user-specified normalization function
     if (mode == "meanshift") {
       norm <- norm_1 
@@ -142,190 +195,134 @@ cytofin_normalize <-
       norm <- norm_5
     }
     
+    # create final data structure 
+    result <- 
+      dplyr::mutate(
+        md, 
+        universal_mean = list(0), 
+        universal_var = list(0), 
+        anchor_mean = list(0), 
+        anchor_var = list(0), 
+        mean_b4norm = list(0), 
+        var_b4norm = list(0), 
+        mean_norm = list(0), 
+        var_norm = list(0), 
+        anchor_mean_norm = list(0), 
+        anchor_var_norm = list(0)
+      )
+    
     # for each file being batch-normalized...
     for (i in 1:length(md$filename)) {
-      #calculate adjustment parameters from control plate
+      # calculate adjustment parameters from control plate
       
-      # find the control file corresponding to the same plate and cohort 
+      # find the anchor file corresponding to the same plate and cohort 
       # as the file being batch normalized
-      filename_ctr <- 
+      filename_anchor <- 
         md_control$filename[
           which(
             (md_control$plate_number == md$plate_number[i]) & 
               (md_control$cohort == md$cohort[i])
           )
         ]
+      
+      # read in the anchor file
       fcs <- 
-        flowCore::read.flowSet(
-          file.path(input_path, paste0("homogenized_", filename_ctr)), 
+        flowCore::read.FCS(
+          file.path(input_data_path, paste0(input_prefix, filename_anchor)), 
           transformation = FALSE, 
           truncate_max_range = FALSE
         )
       
-      asinhNik <- flowCore::arcsinhTransform(a = 0, b = 0.2)
-      colname <- flowCore::colnames(fcs)
-      tlist <- flowCore::transformList(from = colname, tfun = asinhNik)
+      # arcsinh transform all columns of the anchor file
+      asinh_transform <- 
+        flowCore::arcsinhTransform(a = shift_factor, b = scale_factor)
+      col_names <- flowCore::colnames(fcs)
+      tlist <- flowCore::transformList(from = col_names, tfun = asinh_transform)
       fcs_asinh <- flowCore::transform(fcs, tlist)
-      expr_ctr <- flowCore::fsApply(fcs_asinh, flowCore::exprs)
-      mean_ctr <- apply(expr_ctr, 2, mean)
-      mean_ctr_mean <- mean(mean_ctr)
-      var_ctr <- apply(expr_ctr, 2, var)
-      var_ctr_mean <- mean(var_ctr)
-      markername <- flowCore::pData(flowCore::parameters(fcs[[1]]))$desc
+    
+      # find the mean and variance vector of the anchor file
+      anchor_expr <- flowCore::exprs(fcs_asinh)
+      anchor_mean <- apply(anchor_expr, 2, mean)
+      anchor_var <- apply(anchor_expr, 2, var)
       
-      #normalize the control plate
-      expr_ctr_norm <- t(flowCore::fsApply(fcs_asinh, function(x) apply(x, 1, norm), use.exprs=TRUE))
-      mean_ctr_norm <- apply(expr_ctr_norm, 2, mean)
-      var_ctr_norm <- apply(expr_ctr_norm, 2, var)
-      mean_ctr_norm_mean <- mean(mean_ctr_norm)
-      var_ctr_norm_mean <- mean(var_ctr_norm)
+      # find the bulk mean and bulk variance of the anchor file
+      anchor_bulk_mean <- mean(anchor_mean)
+      anchor_bulk_var <- mean(anchor_var)
       
-      # normalize the target plate
-      ## before
+      # normalize the anchor file
+      anchor_expr_norm <- 
+        t(apply(anchor_expr, 1, norm))
+      
+      anchor_mean_norm <- apply(anchor_expr_norm, 2, mean)
+      anchor_var_norm <- apply(anchor_expr_norm, 2, var)
+      
+      # normalize the target file
+      
+      ## read in target file  
       filename <- md$filename[i]
       fcs <- 
-        flowCore::read.flowSet(
-          file.path(input_path, paste0("homogenized_", filename)), 
+        flowCore::read.FCS(
+          file.path(input_data_path, paste0(input_prefix, filename)), 
           transformation = FALSE, 
           truncate_max_range = FALSE
         )
       
-      # doesn't this overwrite the function definition above?
-      asinhNik <- flowCore::arcsinhTransform(a = 0, b = 0.2)
-      colname <- flowCore::colnames(fcs)
-      tlist <- flowCore::transformList(from = colname, tfun = asinhNik)
+      # arcsinh-transform all columns of the target file
+      col_names <- flowCore::colnames(fcs)
+      tlist <- flowCore::transformList(from = col_names, tfun = asinh_transform)
       fcs_asinh <- flowCore::transform(fcs, tlist)
-      expr_b4norm <- flowCore::fsApply(fcs_asinh, flowCore::exprs)
+      
+      # extract target file's expression matrix before normalization
+      expr_b4norm <- flowCore::exprs(fcs_asinh)
+      
+      # find the target file's un-normalized mean and variance vectors
       mean_b4norm <- apply(expr_b4norm, 2, mean)
       var_b4norm <- apply(expr_b4norm, 2, var)
-      mean_b4norm_mean <- mean(mean_b4norm)
-      var_b4norm_mean <- mean(var_b4norm)
       
-      ## after
-      expr_norm <- t(flowCore::fsApply(fcs_asinh, function(x) apply(x, 1, norm), use.exprs = TRUE))
+      ## normalize the target file
+      expr_norm <- 
+        t(apply(expr_b4norm, 1, norm))
+      
+      # find the mean and variance vectors of the normalized target file
       mean_norm <- apply(expr_norm, 2, mean)
       var_norm <- apply(expr_norm, 2, var)
-      mean_norm_mean <- mean(mean_norm)
-      var_norm_mean <- mean(var_norm)
+      
+      # create flowFrame to be written as the output .fcs file for this sample
       fcs_norm <- flowCore::flowFrame(expr_norm)
       
-      
-      # normalization completed, reverse transformation
-      tlist2 <- flowCore::transformList(from = colname, tfun = rev_asinh)
+      # normalization completed, reverse asinh transformation for final output
+      my_rev_asinh <- 
+        function(x) {
+          rev_asinh(x, shift_factor = shift_factor, scale_factor = scale_factor)
+        }
+      tlist2 <- flowCore::transformList(from = col_names, tfun = my_rev_asinh)
       fcs_asinh_rev <- flowCore::transform(fcs_norm, tlist2)
-      flowCore::pData(flowCore::parameters(fcs_asinh_rev))$desc <- flowCore::pData(flowCore::parameters(fcs_asinh[[1]]))$desc
-      fcs_name <- paste0(output_path,"normalized_",filename)
-      flowCore::write.FCS(fcs_asinh_rev, fcs_name)
       
-      # compare to validation
-      # TO DO: What does "validation" mean in this context? should this be more modular?
-      if (val_path != "none") {
-        filename_val <- md$validation[i]
-        fcs <- 
-          flowCore::read.flowSet(
-            paste0(val_path,filename_val), 
-            transformation = FALSE, 
-            truncate_max_range = FALSE
-          )
-        asinhNik <- flowCore::arcsinhTransform(a = 0, b = 0.2)
-        colname <- flowCore::colnames(fcs)
-        tlist <- flowCore::transformList(from = colname, tfun = asinhNik)
-        fcs_asinh <- flowCore::transform(fcs, tlist)
-        expr_val <- flowCore::fsApply(fcs_asinh, flowCore::exprs)
-        mean_val <- apply(expr_val, 2, mean)
-        var_val <- apply(expr_val, 2, var)
-        mean_val_mean <- mean(mean_val)
-        var_val_mean <- mean(var_val)
-      }
+      # prepare and write out final .fcs file
+      flowCore::pData(flowCore::parameters(fcs_asinh_rev))$desc <- 
+        flowCore::pData(flowCore::parameters(fcs_asinh))$desc
+      fcs_name <- file.path(output_data_path, paste0(output_prefix, filename))
+      flowCore::write.FCS(x = fcs_asinh_rev, filename = fcs_name)
       
-      
-      
-      # visualize antigen panel comparing universal vs plate
-      # TO DO: these visualizations are a little confusing...
-      # should we abstract them into their own new function?
-      par(mfrow = c(2, 4))
-      
-      len <- length(mean_uni[all_markers])
-      
-      #expression (mean)
-      #plot 1
-      plot(
-        mean_uni[all_markers], 
-        col = 'red', 
-        xlab = 'antigen', 
-        ylab = 'universal expression (mean)', 
-        xlim = c(0, len), 
-        ylim = c(-5,10), 
-        main = 'overall', 
-        cex.main = 1
-      )
-      
-      legend(1, 10, legend = c("universal"), col = c("red"), lty=1:2, cex = 0.8)
-      
-      #plot 2
-      plot(mean_ctr[all_markers], col='cyan', xlab='antigen', ylab='control expression (mean)', xlim=c(0,len), ylim=c(-5,10), main=filename_ctr, cex.main=0.8)
-      par(new=TRUE)
-      plot(mean_ctr_norm[all_markers], col='blue', xlab='antigen', ylab='control expression (mean)', xlim=c(0, len), ylim=c(-5,10), cex.main=0.8)
-      legend(1,10,legend=c("normalized", "original"),col=c("blue", "cyan"), lty=1:2, cex=0.8)
-      
-      #plot 3
-      plot(mean_b4norm[all_markers], col='green', xlab='antigen', ylab='plate expression (mean)', xlim=c(0,len), ylim=c(-5,10), main=filename, cex.main=0.8)
-      par(new=TRUE)
-      plot(mean_norm[all_markers], col='darkgreen', xlab='antigen', ylab='plate expression (mean)', xlim=c(0,len), ylim=c(-5,10), cex.main=0.8)
-      legend(1,10,legend=c("normalized", "original"),col=c("darkgreen", "green"), lty=1:2, cex=0.8)
-      
-      #plot 4
-      if (val_path != "none"){
-        plot(mean_b4norm[all_markers], col='green', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
-        par(new=TRUE)
-        plot(mean_norm[all_markers], col='darkgreen', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
-        par(new=TRUE)
-        plot(mean_val[all_markers], col='purple', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
-        par(new=TRUE)
-        legend(1,10,legend=c("original", "normalized", "validation"),col=c("green", "darkgreen", "purple"), lty=1:2, cex=0.8)
-      } else {
-        plot(mean_b4norm[all_markers], col='green', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
-        par(new=TRUE)
-        plot(mean_norm[all_markers], col='darkgreen', xlab='antigen', ylab='overlay expression (mean)', xlim=c(0,len), ylim=c(-5,10))
-        par(new=TRUE)
-        legend(1,10,legend=c("original", "normalized"), col=c("green", "darkgreen"), lty=1:2, cex=0.8)
-      }
-      
-      
-      #expression (std)
-      #plot 5
-      plot(sqrt(var_uni[all_markers]), col='red', xlab='antigen', ylab='universal expression (std)', xlim=c(0,len), ylim=c(-5,10), main='overall', cex.main=1)
-      legend(1,10,legend=c("universal"),col=c("red"), lty=1:2, cex=0.8)
-      
-      #plot 6
-      plot(sqrt(var_ctr[all_markers]), col='cyan', xlab='antigen', ylab='control expression (std)', xlim=c(0,len), ylim=c(-5,10), main=filename_ctr, cex.main=0.8)
-      par(new=TRUE)
-      plot(sqrt(var_ctr_norm[all_markers]), col='blue', xlab='antigen', ylab='control expression (std)', xlim=c(0,len), ylim=c(-5,10), cex.main=0.8)
-      legend(1,10,legend=c("normalized", "original"),col=c("blue", "cyan"), lty=1:2, cex=0.8)
-      
-      #plot 7
-      plot(sqrt(var_b4norm[all_markers]), col='green', xlab='antigen', ylab='plate expression (std)', xlim=c(0,len), ylim=c(-5,10), main=filename, cex.main=0.8)
-      par(new=TRUE)
-      plot(sqrt(var_norm[all_markers]), col='darkgreen', xlab='antigen', ylab='plate expression (std)', xlim=c(0,len), ylim=c(-5,10), cex.main=0.8)
-      legend(1,10,legend=c("normalized", "original"),col=c("darkgreen", "green"), lty=1:2, cex=0.8)
-      
-      #plot 8
-      if (val_path != "none"){
-        plot(sqrt(var_b4norm[all_markers]), col='green', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
-        par(new=TRUE)
-        plot(sqrt(var_norm[all_markers]), col='darkgreen', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
-        par(new=TRUE)
-        plot(var_val[all_markers], col='purple', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
-        par(new=TRUE)
-        legend(1,10,legend=c("original", "normalized", "validation"), col=c("green", "darkgreen", "purple"), lty=1:2, cex=0.8)
-      } else {
-        plot(sqrt(var_b4norm[all_markers]), col='green', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
-        par(new=TRUE)
-        plot(sqrt(var_norm[all_markers]), col='darkgreen', xlab='antigen', ylab='overlay expression (std)', xlim=c(0,len), ylim=c(-5,10))
-        par(new=TRUE)
-        legend(1,10,legend=c("original", "normalized"), col=c("green", "darkgreen"), lty=1:2, cex=0.8)
-      }
-      
-      
+      # update final data structure 
+      result$universal_mean[[i]] <- universal_mean 
+      result$universal_var[[i]] <- universal_var
+      result$anchor_mean[[i]] <- anchor_mean
+      result$anchor_var[[i]] <- anchor_var
+      result$mean_b4norm[[i]] <- mean_b4norm
+      result$var_b4norm[[i]] <- var_b4norm
+      result$mean_norm[[i]] <- mean_norm
+      result$var_norm[[i]] <- var_norm
+      result$anchor_mean_norm[[i]] <- anchor_mean_norm
+      result$anchor_var_norm[[i]] <- anchor_var_norm
     }
+    
+    # add marker list and arcsinh transformation parameters to the final data structure
+    attr(result, which = "shift_factor") <- shift_factor
+    attr(result, which = "scale_factor") <- scale_factor
+    attr(result, which = "all_markers") <- all_markers
+    
+    # return result
+    return(result)
+    
   }

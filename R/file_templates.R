@@ -36,13 +36,13 @@ cytofin_generate_metadata_template <-
     data.frame(
       filename = c("file_1.fcs", "file_2.fcs", "file_3.fcs", "file_4.fcs"), 
       cohort = c("cohort_1", "cohort_1", "cohort_2", "cohort_2"),
-      plate_number = c("plate_1", "plate_2", "plate_3", "plate_4"), 
+      plate_number = c("plate_1", "plate_1", "plate_2", "plate_2"), 
       patient_id = c("patient_1", "patient_2", "patient_a", "patient_b"), 
       condition = c("basal", "basal", "stimulation_1", "stimulation_2"), 
-      population = c("B-cells", "B-cells", "B-cells", "T-cells"), 
+      is_anchor = c(0, 1, 0, 1), 
       validation = 
         paste0(
-          "homogenized_", 
+          "validation_", 
           c("file_1.fcs", "file_2.fcs", "file_3.fcs", "file_4.fcs")
         )
     )
@@ -94,7 +94,6 @@ cytofin_generate_panel_template <-
     data.frame(
       metal_name = c("Time", "Event_length", "(Pd102)Di", "(Pd104)Di"), 
       antigen_name = c("Time", "Event_length", "marker_name_1", "marker_name_2"),
-      antigen_pattern = c("[Tt]ime", "ength", "regex_1", "regex_2"), 
       lineage = c(0, 0, 1, 1), 
       functional = c(0, 0, 0, 1), 
       general = c(0, 1, 1, 1)

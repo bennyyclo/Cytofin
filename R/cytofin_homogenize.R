@@ -1,27 +1,33 @@
-#' Homogenize CyTOF data panel
+#' Homogenize CyTOF channels names using a consensus antigen panel
 #'
 #' This function homogenizes CyTOF data (.fcs files) from heterogeneous sources 
-#' according to the standard panel in `panel_path.`
+#' according to the standard panel in a .csv file located at `panel_path.`
 #'
-#' @param metadata_path A filepath leading to an .xlsx or .csv file 
-#' containing a table of CyTOF file (.fcs file) names. Columns should include
-#' `filename`, `cohort`, `plate_number`, `patient_id`, `condition`, `population`, 
-#' and `validation`. TO DO: Change the names of these columns to more descriptive
-#' names and make sure that they are all actually needed. 
+#' @param metadata_path A file path leading to an .xlsx or .csv file 
+#' containing a table of CyTOF file (.fcs file) names in the first column (`filename`)
+#' and additional information about each .fcs file in subsequent columns. 
+#' Columns should include `filename`, `cohort`, `plate_number`, `patient_id`, 
+#' `condition`, `is_anchor`, and `validation`. 
+#' 
 #' See the vignette for details: \code{vignette("help", package = "cytofin")} 
 #' 
 #' @param panel_path A file path leading to an .xlsx or .csv file containing 
 #' a table of standardized antigen panel information. Columns should include 
-#' `desc`, `range`, `metal_pattern`, `antigen_pattern`, `Lineage`, `Functional`, 
-#' and `General`. TO DO: Change the names of these columns to more descriptive
-#' names and make sure that they are all actually needed. 
+#' `metal_name`, `antigen_name`, `antigen_pattern`, 
+#' `lineage`, `functional`, and `general`. 
+#' 
 #' See the vignette for details: \code{vignette("help", package = "cytofin")}
 #' 
-#' 
-#' @param input_data_path A folder directory containing the input CyTOF files
+#' @param input_data_path A folder directory containing the input .fcs files
 #' to be homogenized.
 #' 
-#' @param output_data_path A folder directory containing output homogenized files.
+#' @param output_data_path A folder directory to which the output (i.e. 
+#' homogenized) .fcs files should be written.
+#' 
+#' @param prefix A string appended to the name of each input file to create the 
+#' name of the corresponding output file (post-homogenization). Defaults to 
+#' "homogenized_" (e.g. an input file named "file1.fcs" will correspond to 
+#' the output file "homogenized_file1.fcs" saved in `output_data_path`). 
 #' 
 #' @param verbose A boolean value indicating whether progress message should be 
 #' printed to the console during homogenization. Defaults to FALSE.
@@ -37,22 +43,10 @@
 #' @examples
 #' 
 #' # For a complete example of the `cytofin` workflow, 
-#' # see the packages vignette by running `vignette("help", package = "cytofin")`
+#' # see the packages vignette by running the following: 
+#' `vignette("help", package = "cytofin")`
 #' 
-#' # download and store the metadata file
-#' TO DO 
-#' 
-#' # download and store the panel file
-#' TO DO 
-#' 
-#' # download and store the input data in a temporary directory
-#' TO DO 
-#' 
-#' # specify a temporary output directory
-#' TO DO 
-#' 
-#' # run homogenization
-#' TO DO 
+
 
 cytofin_homogenize <- 
   function(
@@ -60,6 +54,7 @@ cytofin_homogenize <-
     panel_path, 
     input_data_path, 
     output_data_path, 
+    prefix = "homogenized_",
     verbose = FALSE
   ) 
   {
@@ -72,14 +67,6 @@ cytofin_homogenize <-
     
     # read reference panel information
     ref_panel <- cytofin_read_panel_info(panel_path)
-    
-    # extract components of the metadata (why???)
-    filename <- md$filename
-    cohort <- md$cohort
-    plate_number <- md$plate_number
-    patient_id <- md$patient_id
-    condition <- md$condition
-    population <- md$population
     
     # for all files in the input directory
     for (file in md$filename) {
@@ -104,16 +91,12 @@ cytofin_homogenize <-
         flowCore::pData(flowCore::parameters(fcs_raw))$name
       
       # for each channel in the reference panel
-      for (i in 1:length(ref_panel$range)) {
+      for (i in 1:length(ref_panel$antigen_name)) {
         tryCatch(
           {
             # extract the antigen name in the reference and its corresponding regex
-            ref_antigen <- ref_panel$range[[i]]
-            ref_antigen_regex <- ref_panel$antigen_pattern[[i]] #regex
-            
-            ### are neither of these used?
-            ref_metal <- ref_panel$desc[[i]]
-            ref_metal_regex <- ref_panel$metal_pattern[[i]]
+            ref_antigen <- ref_panel$antigen_name[[i]]
+            ref_antigen_regex <- ref_panel$antigen_pattern[[i]]
             
             # Find the index of the data antigen corresponding to the reference antigen
             data_antigen_index <- 
@@ -126,14 +109,13 @@ cytofin_homogenize <-
             
             # if there was a match with the reference antigen's regex
             if (max(data_antigen_index) == 1) {
-              # rename the data antigen in the flowFrame using the reference name
+              # rename the data antigen in the flowFrame using the reference antigen name
               flowCore::pData(flowCore::parameters(fcs_raw))$desc[data_antigen_index] <- 
                 ref_antigen
               # otherwise
-            } else {
-              # do nothing???
             }
             
+            # report what was matched if verbose
             if(verbose) {
               cat(
                 "matched data antigen: ",
@@ -146,7 +128,7 @@ cytofin_homogenize <-
               )
             }
           }, 
-          # what's going on with this error function???
+          # if an error is encountered, print some information
           error = 
             function(e) {
               txt <- 
@@ -159,16 +141,13 @@ cytofin_homogenize <-
               cat(txt,"\n")
             }
         )
-        
-        # TO DO: remove line below this comment
-        # fcs_raw
       }
       
       # finalize the fcs file to write as output
       fcs <- homogenize_flowFrame(fcs_raw, ref_panel)
       
       # write output fcs file to the specified directory
-      filename <- paste0(output_data_path,"homogenized_", file)
+      filename <- file.path(output_data_path, paste0(prefix, file))
       flowCore::write.FCS(fcs, filename)
       
     }

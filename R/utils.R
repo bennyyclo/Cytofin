@@ -30,8 +30,8 @@ get_extension <- function(filename) {
 homogenize_flowFrame <- function(fcs_raw, ref_panel) {
   
   #extract some needed values from the raw fcs data and the reference panel
-  ref_markers <- ref_panel$range
-  ref_metals <- ref_panel$desc
+  ref_markers <- ref_panel$antigen_name
+  ref_metals <- ref_panel$metal_name
   
   panel_fcs <- flowCore::pData(flowCore::parameters(fcs_raw))
   panel_markers <- panel_fcs$desc
@@ -142,4 +142,28 @@ cytofin_read_panel_info <- function(panel_path) {
   ref_panel <- data.frame(lapply(ref_panel, trimws), stringsAsFactors = FALSE)
   
   return(ref_panel)
+}
+
+
+#' Reverses arcsinh transformation with cofactor `scale_factor` and a shift of `shift_factor`.
+#'
+#' @param x A numeric vector.
+#' 
+#' @param shift_factor The scalar value `a` in the following equation used to 
+#' transform CyTOF raw data ion counts using the hyperbolic arcsinh function:  
+#'    `new_x <- asinh(a + b * x)`.
+#' 
+#' @param scale_factor The scalar value `b` in the following equation used to 
+#' transform CyTOF raw data ion counts using the hyperbolic arcsinh function:  
+#'    `new_x <- asinh(a + b * x)`.
+#'
+#' @return A numeric vector after undergoing reverse 
+#' arcsinh transformation 
+#' 
+#'
+rev_asinh <- function(x, shift_factor, scale_factor) {
+  
+  new_x <- (sinh(x) - shift_factor) / scale_factor
+  return(new_x)
+  
 }

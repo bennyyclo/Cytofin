@@ -2,35 +2,43 @@
 % Please edit documentation in R/cytofin_homogenize.R
 \name{cytofin_homogenize}
 \alias{cytofin_homogenize}
-\title{Homogenize CyTOF data panel}
+\title{Homogenize CyTOF channels names using a consensus antigen panel}
 \usage{
 cytofin_homogenize(
   metadata_path,
   panel_path,
   input_data_path,
   output_data_path,
+  prefix = "homogenized_",
   verbose = FALSE
 )
 }
 \arguments{
-\item{metadata_path}{A filepath leading to an .xlsx or .csv file
-containing a table of CyTOF file (.fcs file) names. Columns should include
-\code{filename}, \code{cohort}, \code{plate_number}, \code{patient_id}, \code{condition}, \code{population},
-and \code{validation}. TO DO: Change the names of these columns to more descriptive
-names and make sure that they are all actually needed.
+\item{metadata_path}{A file path leading to an .xlsx or .csv file
+containing a table of CyTOF file (.fcs file) names in the first column (\code{filename})
+and additional information about each .fcs file in subsequent columns.
+Columns should include \code{filename}, \code{cohort}, \code{plate_number}, \code{patient_id},
+\code{condition}, \code{is_anchor}, and \code{validation}.
+
 See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
 \item{panel_path}{A file path leading to an .xlsx or .csv file containing
 a table of standardized antigen panel information. Columns should include
-\code{desc}, \code{range}, \code{metal_pattern}, \code{antigen_pattern}, \code{Lineage}, \code{Functional},
-and \code{General}. TO DO: Change the names of these columns to more descriptive
-names and make sure that they are all actually needed.
+\code{metal_name}, \code{antigen_name}, \code{antigen_pattern},
+\code{lineage}, \code{functional}, and \code{general}.
+
 See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
-\item{input_data_path}{A folder directory containing the input CyTOF files
+\item{input_data_path}{A folder directory containing the input .fcs files
 to be homogenized.}
 
-\item{output_data_path}{A folder directory containing output homogenized files.}
+\item{output_data_path}{A folder directory to which the output (i.e.
+homogenized) .fcs files should be written.}
+
+\item{prefix}{A string appended to the name of each input file to create the
+name of the corresponding output file (post-homogenization). Defaults to
+"homogenized_" (e.g. an input file named "file1.fcs" will correspond to
+the output file "homogenized_file1.fcs" saved in \code{output_data_path}).}
 
 \item{verbose}{A boolean value indicating whether progress message should be
 printed to the console during homogenization. Defaults to FALSE.}
@@ -44,25 +52,12 @@ file at \code{panel_path.}
 }
 \description{
 This function homogenizes CyTOF data (.fcs files) from heterogeneous sources
-according to the standard panel in \code{panel_path.}
+according to the standard panel in a .csv file located at \code{panel_path.}
 }
 \examples{
 
 # For a complete example of the `cytofin` workflow, 
-# see the packages vignette by running `vignette("help", package = "cytofin")`
+# see the packages vignette by running the following: 
+`vignette("help", package = "cytofin")`
 
-# download and store the metadata file
-TO DO 
-
-# download and store the panel file
-TO DO 
-
-# download and store the input data in a temporary directory
-TO DO 
-
-# specify a temporary output directory
-TO DO 
-
-# run homogenization
-TO DO 
 }
