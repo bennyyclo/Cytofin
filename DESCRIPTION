@@ -1,18 +1,29 @@
 Package: cytofin
-Title: What the Package Does (One Line, Title Case)
+Title: Integrate CyTOF Datasets From Heterogeneous Sources
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "Ben",
+    c(person(given = "Ben",
            family = "Lo",
            role = c("aut", "cre"),
-           email = "bennylo@stanford.edu",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Cytofin: an R package for Cytof data integration.
+           email = "bennylo@stanford.edu"),
+      person(given = "Timothy", 
+             family = "Keyes", 
+             role = "aut", 
+             email = "tkeyes@stanford.edu", 
+             comment = c(ORCID = "0000-0003-0423-9679")), 
+      person(given = "Kara", 
+             family = "Davis", 
+             role = c("rth", "own"),
+             email = "kardavis@stanford.edu"))
+Description: Integrate multiple CyTOF datasets collected from independent
+  sources (i.e. labs, institutions, etc.). Cytofin performs CyTOF panel alignment
+  across datasets ("homogenization") as well as batch correction using generalized
+  anchors identified on each CyTOF plate ("normalization").
 License: `use_mit_license()`
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Imports:
 	flowCore,
 	readxl,
@@ -20,4 +31,6 @@ Imports:
 	tidyr,
 	reshape2,
 	ggplot2
-
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
