@@ -72,6 +72,9 @@ cytofin_prep_anchors <- function(
   scale_factor = 0.2
 ) {
   
+  # create output directory if needed
+  dir.create(output_path, showWarnings = FALSE, recursive = TRUE)
+  
   # read metadata table and select only the anchor samples
   md_control <- 
     dplyr::filter(cytofin_read_metadata(metadata_path), is_anchor == 1)

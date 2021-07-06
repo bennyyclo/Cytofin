@@ -1,6 +1,7 @@
 
 -   [cytofin](#cytofin)
     -   [Installation](#installation)
+    -   [Path handling](#path-handling)
     -   [Usage](#usage)
         -   [CyTOF data homogenization](#cytof-data-homogenization)
         -   [CyTOF batch normalization](#cytof-batch-normalization)
@@ -16,7 +17,7 @@
 
 # cytofin
 
-CytofIn (CyTOF integration) is an R package for homogenizing and
+CytofIn (**CyTOF** **In**tegration) is an R package for homogenizing and
 normalizing heterogeneous [mass cytometry
 (CyTOF)](https://pubmed.ncbi.nlm.nih.gov/21551058/) data from diverse
 data sources. Specifically, CytofIn provides functions that perform the
@@ -66,6 +67,20 @@ following line:
 
 ``` r
 library(cytofin)
+```
+
+## Path handling
+
+For the sake of this vignette, we will work within a single folder,
+where we will store the input data, the output data, and all
+intermediate files from the CytofIn pipeline. We will default to using
+the current working directory, but feel free to modify the following
+line of code to change which path you want to use.
+
+``` r
+# change this path to wherever you want this vignette to find and store
+# its input and output files
+base_path <- getwd()
 ```
 
 ## Usage
@@ -123,7 +138,7 @@ with dummy example data in a location specified by the user:
 
 ``` r
 # specify the path where you'd like to store the template file
-my_path <- file.path("~", "Desktop", "template_folder")
+my_path <- file.path(base_path, "template_folder")
 
 # generate the template file, which then can be edited manually 
 cytofin_generate_metadata_template(template_path = my_path)
@@ -162,9 +177,7 @@ As above, the `cytofin_generate_panel_template` function is provided to
 generate an example metadata .csv file filled with dummy example data:
 
 ``` r
-# specify the path where you'd like to store the template file
-my_path <- 
-  file.path("~", "Desktop", "template_folder")
+my_path <- file.path(base_path, "template_folder")
 
 # generate the template file, which then can be edited manually 
 cytofin_generate_panel_template(template_path = my_path)
@@ -204,15 +217,26 @@ Example function call:
 ``` r
 # define input paths 
 metadata_path <- 
-  "/Users/tkeyes/GitHub/cytofin/inst/extdata/test_metadata_raw.csv"
+  system.file(
+    file.path("extdata", "test_metadata_raw.csv"), 
+    package = "cytofin"
+  )
+
 panel_path <- 
-  "/Users/tkeyes/GitHub/cytofin/inst/extdata/test_panel.csv"
+  system.file(
+    file.path("extdata", "test_panel.csv"), 
+    package = "cytofin"
+  )
+
 input_data_path <- 
-  "/Users/tkeyes/GitHub/cytofin/inst/extdata/test_raw_fcs_files"
+  system.file(
+    file.path("extdata", "test_raw_fcs_files"), 
+    package = "cytofin"
+  )
 
 # define output path
 # --Change this line to wherever you want the output files saved!--
-output_data_path <- file.path("~", "temp", "out_test")
+output_data_path <- file.path(base_path, "homogenization_output")
 
 # call homogenization function
 cytofin_homogenize(
@@ -248,17 +272,16 @@ directory are now as follows:
 
 ``` r
 list.files(output_data_path, pattern = ".fcs$")
-#>  [1] "final_outputnormalized_ALL05v2_Plate2_UPN94 das.fcs"
-#>  [2] "homogenized_ALL05v2_Plate2_healthy basal1.fcs"      
-#>  [3] "homogenized_ALL05v2_Plate2_UPN94 das.fcs"           
-#>  [4] "homogenized_ALL08_Plate8_Healthy03 basal.fcs"       
-#>  [5] "homogenized_ALL08_Plate8_UPN26 basal.fcs"           
-#>  [6] "homogenized_CRLF2_Plate1_Healthy 04 BCR.fcs"        
-#>  [7] "homogenized_CRLF2_Plate1_UPN53 das + TSLP.fcs"      
-#>  [8] "homogenized_MS_Plate5_Healthy BM.fcs"               
-#>  [9] "homogenized_MS_Plate5_SU978 Basal.fcs"              
-#> [10] "homogenized_SJ_Plate2_Healthy_BM.fcs"               
-#> [11] "homogenized_SJ_Plate2_TB010950_Basal.fcs"
+#>  [1] "homogenized_ALL05v2_Plate2_healthy basal1.fcs"
+#>  [2] "homogenized_ALL05v2_Plate2_UPN94 das.fcs"     
+#>  [3] "homogenized_ALL08_Plate8_Healthy03 basal.fcs" 
+#>  [4] "homogenized_ALL08_Plate8_UPN26 basal.fcs"     
+#>  [5] "homogenized_CRLF2_Plate1_Healthy 04 BCR.fcs"  
+#>  [6] "homogenized_CRLF2_Plate1_UPN53 das + TSLP.fcs"
+#>  [7] "homogenized_MS_Plate5_Healthy BM.fcs"         
+#>  [8] "homogenized_MS_Plate5_SU978 Basal.fcs"        
+#>  [9] "homogenized_SJ_Plate2_Healthy_BM.fcs"         
+#> [10] "homogenized_SJ_Plate2_TB010950_Basal.fcs"
 ```
 
 ### CyTOF batch normalization
@@ -299,17 +322,17 @@ patient or cell line was included on every CyTOF plate being integrated,
 the samples corresponding to that patient or cell line on each plate are
 would also be suitable as external anchor choices.
 
-Once users have identified 1 external anchor per plate for CytofIn data
-integration, users must mark its row in the metadata table with a “1” in
-the `is_anchor` column (all other samples should be marked with “0”).
-CytofIn then uses these anchors to define a **universal mean** and
-**universal variance** that represent the central tendency and
+Once users have identified 1 external anchor per plate for `CytofIn`
+data integration, users must mark its row in the metadata table with a
+“1” in the `is_anchor` column (all other samples should be marked with
+“0”). `CytofIn` then uses these anchors to define a **universal mean**
+and **universal variance** that represent the central tendency and
 dispersion, respectively, of the target distribution to which all
 samples will be batch corrected. This correction will be performed with
 the user’s choice from one of five batch correction functions.
 
-In short, CytofIn’s batch normalization procedure using external anchors
-has two steps:
+In short, `CytofIn`’s batch normalization procedure using external
+anchors has two steps:
 
 1.  Preparation of external anchors  
 2.  Application of a transformation function that performs the batch
@@ -321,18 +344,18 @@ We detail function calls for each of these steps below.
 
 The `cytofin_prep_anchors` function concatenates the identified anchor
 files and then calculates summary statistics that are used for batch
-correction in later steps of the pipeline. First, CytofIn calculates the
-mean and standard deviation of each channel in the homogenized dataset
-across all cells from samples identified as external anchors. These
-values represent the overall central tendency and dispersion,
+correction in later steps of the pipeline. First, `CytofIn` calculates
+the mean and standard deviation of each channel in the homogenized
+dataset across all cells from samples identified as external anchors.
+These values represent the overall central tendency and dispersion,
 respectively, of each channel among the anchor samples on each CyTOF
 plate; thus, we call them the **universal means** and **universal
-variances** of the CytofIn integration. Accordingly, the universal mean
-and universal variance vectors will each have *g* elements, where *g* is
-the number of channels in the consensus antigen panel in the panel
-information table. The universal mean and universal variance vectors are
-used in the `meanshift`, `variance`, `z-score`, and `beadlike` methods
-of batch correction (see below).
+variances** of the `CytofIn` integration. Accordingly, the universal
+mean and universal variance vectors will each have *g* elements, where
+*g* is the number of channels in the consensus antigen panel in the
+panel information table. The universal mean and universal variance
+vectors are used in the `meanshift`, `variance`, `z-score`, and
+`beadlike` methods of batch correction (see below).
 
 In addition, the mean of all of the elements of the universal mean
 vector (i.e. the mean of all channel means) and the mean of all of the
@@ -383,14 +406,15 @@ ion counts of the input data. These optional arguments are as follows:
 Finally, here is an example functional call of `cytofin_prep_anchors`:
 
 ``` r
-input_data_path <- file.path("~", "temp", "out_test")
+input_data_path <- file.path(base_path, "homogenization_output")
+output_path <- file.path(base_path, "anchor_prep_output")
 
 anchor_statistics <- 
   cytofin_prep_anchors(
     metadata_path = metadata_path, 
     panel_path = panel_path, 
-    input_data_path = file.path("~", "temp", "out_test"), 
-    output_path = file.path("~", "temp", "out_test", "anchor_prep")
+    input_data_path = input_data_path, 
+    output_path = output_path
   )
 
 print(anchor_statistics)
@@ -443,7 +467,7 @@ universal variance vector (`universal_var`), the universal mean vector
 (`bulk_mean`). Note that the elements of `universal_var` and
 `universal_mean` are named with their corresponding metal names (not
 antigen names), as this interfaces a bit more conveniently with the
-`flowCore` functions that CytofIn uses under-the-hood.
+`flowCore` functions that `CytofIn` uses under-the-hood.
 
 Importantly, you only need to use `cytofin_prep_anchors` if you plan to
 batch normalize your .fcs files using external anchors identified on
@@ -483,7 +507,7 @@ required arguments:
     `cytofin_prep_anchors` function or a connection leading to an .rds
     object containing anchor statistics.
 -   `input_data_path`: A connection to a directory containing the input
-    .FCS files to be batch normalized. In most cases, this will be the
+    .fcs files to be batch normalized. In most cases, this will be the
     directory to which the output .FCS files from `cytofin_homogenize`
     were written.
 -   `output_data_path`: A connection to a directory where the output
@@ -496,11 +520,11 @@ In addition to these required arguments, `cytofin_normalize` takes
 several optional arguments:
 
 -   `input_prefix`: The string that was appended to the name of the raw
-    input .FCS files of `cytofin_homogenize` to create their
+    input .fcs files of `cytofin_homogenize` to create their
     corresponding output file names. Defaults to “homogenized\_”.
 
 -   `output_prefix`: The string to be appended to the name of each input
-    .FCS file to create the name of the corresponding output file
+    .fcs file to create the name of the corresponding output file
     (post-homogenization). Defaults to “normalized\_”.
 
 -   `shift_factor` and `scale_factor`: The scalar values *a* and *b*,
@@ -511,13 +535,13 @@ several optional arguments:
     most scientists in the CyTOF community.
 
 Using these arguments, a call to `cytofin_normalize` will perform the
-batch correction and save the output (i.e. batch normalized) .FCS files
+batch correction and save the output (i.e. batch normalized) .fcs files
 to the directory specified by `output_data_path`. An example function
 call is given here:
 
 ``` r
 output_data_path <- 
-  file.path("~", "temp", "out_test", "anchor_prep")
+  file.path(base_path, "normalization_results")
 
 norm_result <- 
   cytofin_normalize(
@@ -528,12 +552,12 @@ norm_result <-
     output_data_path = output_data_path, 
     mode = "meanshift"
   )
-#> Warning in dir.create(output_data_path): '/Users/tkeyes/temp/out_test/
-#> anchor_prep' already exists
+#> Warning in dir.create(output_data_path): '/Users/tkeyes/Desktop/cytofin_tests/
+#> normalization_results' already exists
 ```
 
 When this function is called, it has two effects. The first is to save
-the batch-normalized output .FCS files to the `output_data_path`
+the batch-normalized output .fcs files to the `output_data_path`
 directory. The second is to return a data.frame that stores mean and
 variance information about each input file (as well as its associated
 anchor) both before and after normalization. This data.frame can be
@@ -544,12 +568,13 @@ normalization:
 ``` r
 # we make just the first plot for illustrative purposes
 cytofin_make_plots(
-  normalization_result = dplyr::slice(norm_result, 1), 
+  normalization_result = norm_result,
+  which_rows = 1,
   val_path = "none"
 )
 ```
 
-<img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
 
 #### Batch normalization using internal anchors (cytofin\_normalize\_nrs)
 
@@ -562,7 +587,7 @@ samples on a given plate like `cytofin_normalize`, the
 `cytofin_normalize_nrs` function identifies the most stable channels in
 the dataset overall and uses them as internal anchors that are used to
 batch normalize all other channels from sample-to-sample. To identify
-the most stable channels in the combined dataset, CytofIn uses a
+the most stable channels in the combined dataset, `CytofIn` uses a
 PCA-based non-redundancy score (NRS) as described before (see
 [here](https://pubmed.ncbi.nlm.nih.gov/26095251/)). A minimum of 3
 channels should be selected to establish an internal reference from
@@ -587,15 +612,9 @@ optional arguments:
 These arguments can be used in a function call as follows:
 
 ``` r
-# local paths
-metadata_path <- 
-  file.path("~", "GitHub", "cytofin", "inst", "extdata", "test_metadata_raw.csv")
-panel_path <-  
-  here::here("inst", "extdata", "test_panel.csv")
-input_data_path <- 
-  file.path("~", "temp", "out_test")
+# path to save the normalized .fcs files
 output_data_path <- 
-  file.path("~", "temp", "out_test", "final_output")
+  file.path(base_path, "normalization_nrs_results")
 
 # call function
 norm_result_nrs <- 
@@ -607,12 +626,12 @@ norm_result_nrs <-
     nchannels = 3, 
     make_plot = FALSE
   )
-#> Warning in dir.create(output_data_path): '/Users/tkeyes/temp/out_test/
-#> final_output' already exists
+#> Warning in dir.create(output_data_path): '/Users/tkeyes/Desktop/cytofin_tests/
+#> normalization_nrs_results' already exists
 ```
 
 Just like `cytofin_normalize` above, `cytofin_normalize_nrs` has several
-effects. First, it writes batch-normalized .FCS files to
+effects. First, it writes batch-normalized .fcs files to
 `output_data_path` and makes a plot depicting sample-wise and
 channel-wise non-redundancy scores according to the value of
 `make_plot`. In addition, it returns a data.frame that can be passed
@@ -624,11 +643,11 @@ normalization procedure:
 cytofin_make_plots(normalization_result = norm_result_nrs[7,])
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
 
 ## Additional Information
 
-For questions about the `CytofIn` R package, please email
+For questions about the `cytofin` R package, please email
 <kardavis@stanford.edu> or open a GitHub issue
 [here](https://github.com/bennyyclo/Cytofin).
 
@@ -660,13 +679,12 @@ sessionInfo()
 #> [13] DBI_1.1.1           yaml_2.2.1          parallel_4.0.3     
 #> [16] xfun_0.22           dplyr_1.0.5         stringr_1.4.0      
 #> [19] knitr_1.32          hms_1.0.0           generics_0.1.0     
-#> [22] S4Vectors_0.28.1    vctrs_0.3.7         rprojroot_2.0.2    
-#> [25] stats4_4.0.3        tidyselect_1.1.0    here_1.0.1         
-#> [28] glue_1.4.2          Biobase_2.50.0      R6_2.5.0           
-#> [31] fansi_0.4.2         rmarkdown_2.7       readr_1.4.0        
-#> [34] tidyr_1.1.3         RProtoBufLib_2.2.0  purrr_0.3.4        
-#> [37] magrittr_2.0.1      matrixStats_0.58.0  htmltools_0.5.1.1  
-#> [40] ellipsis_0.3.1      BiocGenerics_0.36.1 assertthat_0.2.1   
-#> [43] flowCore_2.2.0      utf8_1.2.1          stringi_1.5.3      
-#> [46] RcppParallel_5.1.2  crayon_1.4.1
+#> [22] S4Vectors_0.28.1    vctrs_0.3.7         stats4_4.0.3       
+#> [25] tidyselect_1.1.0    glue_1.4.2          Biobase_2.50.0     
+#> [28] R6_2.5.0            fansi_0.4.2         rmarkdown_2.7      
+#> [31] readr_1.4.0         tidyr_1.1.3         RProtoBufLib_2.2.0 
+#> [34] purrr_0.3.4         magrittr_2.0.1      matrixStats_0.58.0 
+#> [37] htmltools_0.5.1.1   ellipsis_0.3.1      BiocGenerics_0.36.1
+#> [40] assertthat_0.2.1    flowCore_2.2.0      utf8_1.2.1         
+#> [43] stringi_1.5.3       RcppParallel_5.1.2  crayon_1.4.1
 ```

@@ -46,8 +46,6 @@
 #' # see the packages vignette by running the following: 
 #' `vignette("help", package = "cytofin")`
 #' 
-
-
 cytofin_homogenize <- 
   function(
     metadata_path, 
@@ -56,11 +54,10 @@ cytofin_homogenize <-
     output_data_path, 
     prefix = "homogenized_",
     verbose = FALSE
-  ) 
-  {
+  ) {
     
     # create output directory for homogenized .fcs files
-    dir.create(output_data_path)
+    dir.create(output_data_path, showWarnings = FALSE, recursive = TRUE)
     
     # read metadata table
     md <- cytofin_read_metadata(metadata_path)
@@ -80,7 +77,7 @@ cytofin_homogenize <-
         )
       sink()
       if(verbose) {
-      cat("filename:", file, "\n")
+        cat("filename:", file, "\n")
       }
       
       # parse panel in FCS files
