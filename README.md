@@ -1,7 +1,10 @@
 
 -   [cytofin](#cytofin)
     -   [Installation](#installation)
-    -   [Path handling](#path-handling)
+    -   [Data for this vignette](#data-for-this-vignette)
+        -   [Establishing a root
+            directory](#establishing-a-root-directory)
+        -   [Downloading the data](#downloading-the-data)
     -   [Usage](#usage)
         -   [CyTOF data homogenization](#cytof-data-homogenization)
         -   [CyTOF batch normalization](#cytof-batch-normalization)
@@ -29,14 +32,14 @@ following tasks:
     conventions for their panels’ shared markers. Thus, data mining
     across multiple CyTOF datasets requires **homogenization,** the
     process of aligning each dataset’s antibody panels so that they can
-    be analyzed together. In CytofIN, data homogenization (i.e. panel
+    be analyzed together. In `CytofIn`, data homogenization (i.e. panel
     alignment) is performed with the `cytofin_homogenize` function that
     leverages user-provided panel information to combine datasets.
 -   **Dataset normalization** - Combined analysis of multiple CyTOF
     datasets is likely to be confounded by dataset-to-dataset batch
     effects due to differences in instrumentation and experimental
     protocols between groups. To normalize multiple CyTOF datasets with
-    respect to these batch effects, CytofIN provides 3 functions:
+    respect to these batch effects, `CytofIn` provides 3 functions:
     `cytofin_prep_anchors`, `cytofin_normalize`, and
     `cytofin_normalize_nrs`.
 -   **Visualization** - After batch normalization, the means and
@@ -69,7 +72,9 @@ following line:
 library(cytofin)
 ```
 
-## Path handling
+## Data for this vignette
+
+### Establishing a root directory
 
 For the sake of this vignette, we will work within a single folder,
 where we will store the input data, the output data, and all
@@ -82,6 +87,26 @@ line of code to change which path you want to use.
 # its input and output files
 base_path <- getwd()
 ```
+
+### Downloading the data
+
+Now that we’ve identified the root directory we’ll use for this
+vignette, we will create two folders in which we will store the raw
+input data and the validation (bead-normalized) data used in this
+vignette:
+
+``` r
+dir.create(file.path(base_path, "raw_data"), showWarnings = FALSE)
+dir.create(file.path(base_path, "validation_data"), showWarnings = FALSE)
+```
+
+To fill each of these folders with the .fcs files we’re analyzing in
+this vignette, please download the raw input files
+[here](https://flowrepository.org/id/FR-FCM-Z427) and the validation
+files [here](https://flowrepository.org/id/FR-FCM-Z42C) on
+[FlowRepository](https://flowrepository.org/). Once the files are
+downloaded, unzip them and add them to the `raw_data` and
+`validation_data` folders that we just created, respectively.
 
 ## Usage
 
@@ -229,10 +254,10 @@ panel_path <-
   )
 
 input_data_path <- 
-  system.file(
-    file.path("extdata", "test_raw_fcs_files"), 
-    package = "cytofin"
-  )
+  file.path(base_path, "raw_data")
+
+validation_data_path <- 
+  file.path(base_path, "validation_data")
 
 # define output path
 # --Change this line to wherever you want the output files saved!--
@@ -566,7 +591,8 @@ diagnostic plots per sample illustrating the quality of the
 normalization:
 
 ``` r
-# we make just the first plot for illustrative purposes
+# we make only the plot for the first input .fcs file
+# for illustrative purposes
 cytofin_make_plots(
   normalization_result = norm_result,
   which_rows = 1,
@@ -574,7 +600,7 @@ cytofin_make_plots(
 )
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-15-1.png" width="100%" />
 
 #### Batch normalization using internal anchors (cytofin\_normalize\_nrs)
 
@@ -640,10 +666,14 @@ normalization procedure:
 
 ``` r
 # show only 1 set of plots for illustrative purposes
-cytofin_make_plots(normalization_result = norm_result_nrs[7,])
+cytofin_make_plots(
+  normalization_result = norm_result_nrs, 
+  which_rows = 7, 
+  val_path = validation_data_path
+)
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-17-1.png" width="100%" />
 
 ## Additional Information
 

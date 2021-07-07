@@ -112,7 +112,7 @@ cytofin_make_plots <-
         filename_val <- normalization_result$validation[i]
         fcs <-
           flowCore::read.flowSet(
-            paste0(val_path, filename_val),
+            file.path(val_path, filename_val),
             transformation = FALSE,
             truncate_max_range = FALSE
           )
