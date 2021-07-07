@@ -4,7 +4,11 @@
 \alias{cytofin_make_plots}
 \title{Make diagnostic plots to evaluate CytofIn batch normalization}
 \usage{
-cytofin_make_plots(normalization_result, val_path = "none")
+cytofin_make_plots(
+  normalization_result,
+  which_rows = 1:nrow(normalization_result),
+  val_path = "none"
+)
 }
 \arguments{
 \item{normalization_result}{An output data.frame produced by the \code{cytofin_normalize} or
@@ -13,7 +17,11 @@ cytofin_make_plots(normalization_result, val_path = "none")
 The following columns should be present: \code{filename},
 \code{cohort}, \code{plate_number}, \code{patient_id}, \code{condition}, \code{is_anchor}, \code{validation},
 \code{universal_var}, \code{anchor_mean}, \code{anchor_var}, \code{mean_b4norm}, \code{var_b4norm},
-\code{mean_norm}, \code{var_norm}.}
+\code{mean_norm}, \code{var_norm}, \code{mean_ctr_norm}, \code{var_ctr_norm}.}
+
+\item{which_rows}{A numeric vector indicating which rows of \code{normalization_result}
+(i.e. which .fcs files in the combined dataset) should be used for plotting. Defaults
+to 1:nrow(normalization_result), which will make all possible plots.}
 
 \item{val_path}{The folder directory containing validation (i.e. bead-normalized)
 .fcs files corresponding to the input .fcs files in the metadata table. (Optional).}

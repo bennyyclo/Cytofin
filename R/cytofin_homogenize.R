@@ -9,14 +9,10 @@
 #' Columns should include `filename`, `cohort`, `plate_number`, `patient_id`, 
 #' `condition`, `is_anchor`, and `validation`. 
 #' 
-#' See the vignette for details: \code{vignette("help", package = "cytofin")} 
-#' 
 #' @param panel_path A file path leading to an .xlsx or .csv file containing 
 #' a table of standardized antigen panel information. Columns should include 
 #' `metal_name`, `antigen_name`, `antigen_pattern`, 
 #' `lineage`, `functional`, and `general`. 
-#' 
-#' See the vignette for details: \code{vignette("help", package = "cytofin")}
 #' 
 #' @param input_data_path A folder directory containing the input .fcs files
 #' to be homogenized.
@@ -39,12 +35,6 @@
 #' file at `panel_path.`
 #' 
 #' @export
-#' 
-#' @examples
-#' 
-#' # For a complete example of the `cytofin` workflow, 
-#' # see the packages vignette by running the following: 
-#' `vignette("help", package = "cytofin")`
 #' 
 cytofin_homogenize <- 
   function(

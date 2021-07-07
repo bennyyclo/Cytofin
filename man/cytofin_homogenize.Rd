@@ -18,16 +18,12 @@ cytofin_homogenize(
 containing a table of CyTOF file (.fcs file) names in the first column (\code{filename})
 and additional information about each .fcs file in subsequent columns.
 Columns should include \code{filename}, \code{cohort}, \code{plate_number}, \code{patient_id},
-\code{condition}, \code{is_anchor}, and \code{validation}.
-
-See the vignette for details: \code{vignette("help", package = "cytofin")}}
+\code{condition}, \code{is_anchor}, and \code{validation}.}
 
 \item{panel_path}{A file path leading to an .xlsx or .csv file containing
 a table of standardized antigen panel information. Columns should include
 \code{metal_name}, \code{antigen_name}, \code{antigen_pattern},
-\code{lineage}, \code{functional}, and \code{general}.
-
-See the vignette for details: \code{vignette("help", package = "cytofin")}}
+\code{lineage}, \code{functional}, and \code{general}.}
 
 \item{input_data_path}{A folder directory containing the input .fcs files
 to be homogenized.}
@@ -53,11 +49,4 @@ file at \code{panel_path.}
 \description{
 This function homogenizes CyTOF data (.fcs files) from heterogeneous sources
 according to the standard panel in a .csv file located at \code{panel_path.}
-}
-\examples{
-
-# For a complete example of the `cytofin` workflow, 
-# see the packages vignette by running the following: 
-`vignette("help", package = "cytofin")`
-
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cytofin_normalize_nrs.R
 \name{cytofin_normalize_nrs}
 \alias{cytofin_normalize_nrs}
-\title{Normalize CyTOF data panel}
+\title{Batch normalize CyTOF plates from heterogeneous sources using stable channels}
 \usage{
 cytofin_normalize_nrs(
   metadata_path,
@@ -13,7 +13,8 @@ cytofin_normalize_nrs(
   output_prefix = "normalized_",
   shift_factor = 0,
   scale_factor = 0.2,
-  nchannels
+  nchannels = 3,
+  make_plot = FALSE
 )
 }
 \arguments{
@@ -21,12 +22,14 @@ cytofin_normalize_nrs(
 containing a table of CyTOF file (.fcs file) names. Columns should include
 \code{filename}, \code{cohort}, \code{plate_number}, \code{patient_id}, \code{condition}, \code{is_anchor},
 and \code{validation}.
+
 See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
 \item{panel_path}{A file path leading to an .xlsx or .csv file containing
 a table of standardized antigen panel information. Columns should include
 \code{metal_name}, \code{antigen_name}, \code{antigen_pattern},
 \code{lineage}, \code{functional}, and \code{general}.
+
 See the vignette for details: \code{vignette("help", package = "cytofin")}}
 
 \item{input_data_path}{A folder directory containing the input CyTOF files
@@ -47,17 +50,24 @@ the output file "normalized_file1.fcs" saved in \code{output_data_path}).}
 
 \item{shift_factor}{The scalar value \code{a} in the following equation used to
 transform CyTOF raw data ion counts using the hyperbolic arcsinh function:
+
 \code{new_x <- asinh(a + b * x)}.
+
 Defaults to 0.}
 
 \item{scale_factor}{The scalar value \code{b} in the following equation used to
 transform CyTOF raw data ion counts using the hyperbolic arcsinh function:
+
 \code{new_x <- asinh(a + b * x)}.
+
 Defaults to 0.2.}
 
-\item{nchannels}{}
+\item{nchannels}{An integer representing the number of most stable channels to
+use during batch normalization. Defaults to 3.}
 
-\item{val_file_dir}{}
+\item{make_plot}{A boolean value indicating if a plot depicting the non-
+redundancy scores of each marker in each .fcs file being batch normalized
+should be plotted as a side-effect of the function call. Defaults to FALSE.}
 }
 \value{
 Batch-normalized .fcs files are saved in the directory specified by
@@ -86,8 +96,17 @@ before batch normalization.
 after batch normalization.
 \item \strong{var_norm}: the variance (across all cells) vector of the input .fcs file
 after batch normalization.
+\item \strong{anchor_mean_norm}: the mean (across all cells) vector for the anchor file associated
+with each input .fcs file (i.e. the anchor located on the same plate as the
+input .fcs file) after batch normalization.
+\item \strong{anchor_var_norm}: the variance (across all cells) vector for the anchor file associated
+with each input .fcs file (i.e. the anchor located on the same plate as the
+input .fcs file) after batch normalization.
 }
 }
 \description{
-This function normalize CyTOF data panel using internal anchors.
+This function batch normalizes CyTOF data from multiple plates (from one or more
+experimental cohorts) by computing the non-redundancy score (NRS) for each
+channel in the dataset, then using the most redundant (i.e. the "most stable")
+channels as a reference for batch normalization.
 }

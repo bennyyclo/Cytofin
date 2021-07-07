@@ -19,7 +19,7 @@ Description: Integrate multiple CyTOF datasets collected from independent
   sources (i.e. labs, institutions, etc.). Cytofin performs CyTOF panel alignment
   across datasets ("homogenization") as well as batch correction using generalized
   anchors identified on each CyTOF plate ("normalization").
-License: `use_mit_license()`
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
@@ -30,7 +30,12 @@ Imports:
 	stringr,
 	tidyr,
 	reshape2,
-	ggplot2
+	ggplot2, 
+	readr, 
+	dplyr
 Suggests: 
+    rmarkdown,
+    knitr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr

@@ -98,7 +98,6 @@ cytofin_generate_panel_template <-
       dir.create(template_path, showWarnings = FALSE, recursive = TRUE)
     }
     
-    # TO DO: Give a more compelling example of markers and their regex
     #create output data.frame
     output_frame <- 
       data.frame(

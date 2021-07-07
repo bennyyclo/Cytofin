@@ -316,7 +316,7 @@ normalization**) can be performed across datasets. The following
 schematic diagram illustrates how normalization is performed in
 `CytofIn`:
 
-![Alt text](./images/Slide2.PNG?raw=true "Title")
+![](./images/Slide2.PNG?raw=true "Title")
 
 TO DO: Fix a few things about this schematic diagram
 

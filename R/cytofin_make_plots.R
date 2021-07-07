@@ -12,7 +12,7 @@
 #'  `universal_var`, `anchor_mean`, `anchor_var`, `mean_b4norm`, `var_b4norm`,
 #'  `mean_norm`, `var_norm`, `mean_ctr_norm`, `var_ctr_norm`.
 #'  
-#'  @param which_rows A numeric vector indicating which rows of `normalization_result`
+#' @param which_rows A numeric vector indicating which rows of `normalization_result`
 #'  (i.e. which .fcs files in the combined dataset) should be used for plotting. Defaults 
 #'  to 1:nrow(normalization_result), which will make all possible plots.
 #'
