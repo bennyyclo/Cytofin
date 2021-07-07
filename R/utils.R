@@ -5,12 +5,14 @@
 #' @return The the file extension of `filename` 
 #'
 #' @examples
+#' \dontrun{
 #' # example file name
 #' my_filename <- "my_file.txt"
 #' 
 #' # find and print the extension
 #' my_extension <- getExtension(my_filename)
 #' print(my_extension)
+#' }
 get_extension <- function(filename) {
   ex <- strsplit(basename(filename), split="\\.")[[1]]
   return(ex[[-1]])
@@ -23,10 +25,8 @@ get_extension <- function(filename) {
 #' @param ref_panel A data.frame representing the reference panel data for a 
 #' cytofin analysis.
 #'
-#' @return
+#' @return a homogenized flowFrame
 #'
-#' @examples
-#' TO DO: Insert examples
 homogenize_flowFrame <- function(fcs_raw, ref_panel) {
   
   #extract some needed values from the raw fcs data and the reference panel
@@ -87,9 +87,10 @@ homogenize_flowFrame <- function(fcs_raw, ref_panel) {
 #' file stored at `metadata_path`. 
 #'
 #' @examples
+#' \dontrun{
 #' my_path <- file.path("~", "foo", "bar", "metadata.csv")
-#' my_metadata <- cytofin_read_metadata(my_path)
-#' 
+#' my_metadata <- cytofin:::cytofin_read_metadata(my_path)
+#' }
 cytofin_read_metadata <- function(metadata_path) {
   
   if (get_extension(metadata_path) == "xlsx") {
@@ -124,9 +125,10 @@ cytofin_read_metadata <- function(metadata_path) {
 #' file stored at `panel_path`. 
 #'
 #' @examples
+#' \dontrun{
 #' my_path <- file.path("~", "foo", "bar", "panel.csv")
-#' my_metadata <- cytofin_read_panel_info(my_path)
-#' 
+#' my_metadata <- cytofin:::cytofin_read_panel_info(my_path)
+#' }
 cytofin_read_panel_info <- function(panel_path) {
   
   if (get_extension(panel_path) == "xlsx") {

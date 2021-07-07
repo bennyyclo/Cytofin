@@ -16,10 +16,12 @@ The the file extension of \code{filename}
 Find the extension for a file
 }
 \examples{
+\dontrun{
 # example file name
 my_filename <- "my_file.txt"
 
 # find and print the extension
 my_extension <- getExtension(my_filename)
 print(my_extension)
+}
 }
