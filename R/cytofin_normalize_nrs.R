@@ -105,7 +105,7 @@ cytofin_normalize_nrs <-
   ) {
     
     # create output directory
-    dir.create(output_data_path)
+    dir.create(output_data_path, showWarnings = FALSE, recursive = TRUE)
   
     #read metadata table
     md <- cytofin_read_metadata(metadata_path)
