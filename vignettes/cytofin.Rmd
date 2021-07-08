@@ -14,7 +14,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>", 
-  dpi = 300, 
+  dpi = 150, 
   out.width = "100%"
 )
 ```
@@ -163,7 +163,7 @@ used in the studies being integrated, enter "NA" for each element of the
 `condition` column). Alternatively, these columns can be omitted from
 the metadata table entirely. The following image provides a visual summary of the metadata table used throughout the `CytofIn` pipeline. 
 
-![](../inst/images/image2.png){width = 10%}
+![](../inst/images/image2.png)
 
 For the user's convenience, the `cytofin_generate_metadata_template`
 function is provided to generate an example metadata .csv file filled
@@ -204,7 +204,7 @@ following columns:
 
 The layout of this antigen table (and how it's used during .fcs file homogenization) is displayed in the picture below.
 
-![](../inst/images/image1.png){width = 10%}
+![](../inst/images/image1.png)
 
 As in `cytofin_generate_metadata_template`, the `cytofin_generate_panel_template` function is provided to
 generate an example metadata .csv file filled with dummy example data:
@@ -552,7 +552,7 @@ samples on a given plate like `cytofin_normalize`, the
 the dataset overall and uses them as internal anchors that are used to
 batch normalize all other channels from sample-to-sample. A schematic diagram of how `cytofin_normalize_nrs` works is provided below: 
 
-![](../inst/images/image3.png){width = 10%}
+![](../inst/images/image3.png)
 
 To identify
 the most stable channels in the combined dataset, `CytofIn` uses a
