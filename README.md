@@ -6,12 +6,16 @@
             directory](#establishing-a-root-directory)
         -   [Downloading the data](#downloading-the-data)
     -   [Usage](#usage)
-        -   [CyTOF data homogenization](#cytof-data-homogenization)
+        -   [CyTOF data homogenization
+            (cytofin\_homogenize)](#cytof-data-homogenization-cytofin_homogenize)
         -   [CyTOF batch normalization](#cytof-batch-normalization)
             -   [Batch normalization using external anchors
                 (cytofin\_normalize)](#batch-normalization-using-external-anchors-cytofin_normalize)
-                -   [1. Anchor preparation](#1-anchor-preparation)
-                -   [2. Batch normalization](#2-batch-normalization)
+                -   [Overview](#overview)
+                -   [Step 1 - Anchor
+                    preparation](#step-1---anchor-preparation)
+                -   [Step 2 - Batch
+                    normalization](#step-2---batch-normalization)
             -   [Batch normalization using internal anchors
                 (cytofin\_normalize\_nrs)](#batch-normalization-using-internal-anchors-cytofin_normalize_nrs)
     -   [Additional Information](#additional-information)
@@ -23,8 +27,8 @@
 CytofIn (**CyTOF** **In**tegration) is an R package for homogenizing and
 normalizing heterogeneous [mass cytometry
 (CyTOF)](https://pubmed.ncbi.nlm.nih.gov/21551058/) data from diverse
-data sources. Specifically, CytofIn provides functions that perform the
-following tasks:
+data sources. Specifically, `CytofIn` provides functions that perform
+the following tasks:
 
 -   **Dataset homogenization** - CyTOF datasets that were collected
     separately may differ in which markers were included in their
@@ -105,12 +109,13 @@ this vignette, please download the raw input files
 [here](https://flowrepository.org/id/FR-FCM-Z427) and the validation
 files [here](https://flowrepository.org/id/FR-FCM-Z42C) on
 [FlowRepository](https://flowrepository.org/). Once the files are
-downloaded, unzip them and add them to the `raw_data` and
-`validation_data` folders that we just created, respectively.
+downloaded, unzip them. Finally, move all of the unzipped .fcs files
+from each repository into the `raw_data` and `validation_data` folders
+that we just created, respectively.
 
 ## Usage
 
-### CyTOF data homogenization
+### CyTOF data homogenization (cytofin\_homogenize)
 
 Here, the term “homogenization” refers to the process of aligning the
 antigen panels of multiple CyTOF experiments by (1) removing all
@@ -157,7 +162,12 @@ optional columns that don’t apply to the experimental design of the
 files being analyzed (for example, if no stimulation conditions were
 used in the studies being integrated, enter “NA” for each element of the
 `condition` column). Alternatively, these columns can be omitted from
-the metadata table entirely. The `cytofin_generate_metadata_template`
+the metadata table entirely. The following image provides a visual
+summary of the metadata table used throughout the `CytofIn` pipeline.
+
+![](./inst/images/image2.png)
+
+For the user’s convenience, the `cytofin_generate_metadata_template`
 function is provided to generate an example metadata .csv file filled
 with dummy example data in a location specified by the user:
 
@@ -194,16 +204,16 @@ following columns:
     is a “general” (i.e. neither a lineage nor a functional) marker (1
     if yes; 0 otherwise).
 
-The layout of this antigen panel is displayed graphically below.
+The layout of this antigen table (and how it’s used during .fcs file
+homogenization) is displayed in the picture below.
 
-![](./images/Slide1.png?raw=true "Title")
+![](./inst/images/image1.png)
 
-As above, the `cytofin_generate_panel_template` function is provided to
-generate an example metadata .csv file filled with dummy example data:
+As in `cytofin_generate_metadata_template`, the
+`cytofin_generate_panel_template` function is provided to generate an
+example metadata .csv file filled with dummy example data:
 
 ``` r
-my_path <- file.path(base_path, "template_folder")
-
 # generate the template file, which then can be edited manually 
 cytofin_generate_panel_template(template_path = my_path)
 ```
@@ -312,25 +322,24 @@ list.files(output_data_path, pattern = ".fcs$")
 ### CyTOF batch normalization
 
 After dataset homogenization, **batch correction** (or **batch
-normalization**) can be performed across datasets. The following
-schematic diagram illustrates how normalization is performed in
-`CytofIn`:
+normalization**) can be performed across datasets.
 
-![](./images/Slide2.PNG?raw=true "Title")
-
-TO DO: Fix a few things about this schematic diagram
-
-In words, CytofIn performs batch normalization though the use of
-user-identified **anchors -** or \[TO DO: definition of anchors\]. These
-anchors can be either external (TO DO: which means this) or internal (TO
-DO: which means this). To batch normalize using external anchors (which
-is ideal when such anchors are available), use `cytofin_normalize`. To
-batch normalize using internal anchors (which is ideal when no external
-anchors are available), use `cytofin_normalize_nrs`.
+In short, `CytofIn` performs batch normalization though the use of
+user-identified **generalized anchors** - which are non-identical
+references assumed to have low variability across batches - that can be
+used to estimate batch effects from samples collated from heterogeneous
+sources. To batch normalize using healthy control samples (one per
+plate) as generalized anchors (which is ideal when such samples are
+available), use `cytofin_normalize`. To batch normalize using the
+antigen channels with the lowest variability across samples as
+generalized anchors (which is ideal when healthy samples are unavailable
+on all plates being analyzed), use `cytofin_normalize_nrs`.
 
 The use of both of these functions is detailed below.
 
 #### Batch normalization using external anchors (cytofin\_normalize)
+
+##### Overview
 
 The `cytofin_normalize` uses user-identified external anchors on each
 CyTOF plate being integrated to correct batch effects on a
@@ -365,7 +374,7 @@ anchors has two steps:
 
 We detail function calls for each of these steps below.
 
-##### 1. Anchor preparation
+##### Step 1 - Anchor preparation
 
 The `cytofin_prep_anchors` function concatenates the identified anchor
 files and then calculates summary statistics that are used for batch
@@ -501,12 +510,14 @@ your .fcs files using non-redundancy scores from each sample’s most
 stable channels (using `cytofin_normalize_nrs`), you do not need to run
 `cytofin_prep_anchors` first.
 
-##### 2. Batch normalization
+##### Step 2 - Batch normalization
 
 After the anchors’ summary statistics are computed, batch correction
 using external anchors can be performed using either
 `cytofin_normalize`. This function can perform batch correction using 5
-different transformation functions (which we call “modes”). Which of
+different normalizations functions (which we call “modes”).
+Specifically, the options are called the “meanshift”, “meanshift\_bulk”,
+“variance”, “z-score”, and “beadlike” normalization functions. Which of
 these is most applicable to a given analysis will differ from user to
 user. We recommended that users try using both and then manually
 inspect/visualize the batch-corrected data in order to determine which
@@ -577,8 +588,6 @@ norm_result <-
     output_data_path = output_data_path, 
     mode = "meanshift"
   )
-#> Warning in dir.create(output_data_path): '/Users/tkeyes/Desktop/cytofin_tests/
-#> normalization_results' already exists
 ```
 
 When this function is called, it has two effects. The first is to save
@@ -604,7 +613,7 @@ cytofin_make_plots(
 
 #### Batch normalization using internal anchors (cytofin\_normalize\_nrs)
 
-![Alt text](./images/Slide3.PNG?raw=true "Title")
+![](./inst/images/image3.png)
 
 In the event that external anchors are not available, `CytofIn` can use
 “internal anchors” within each sample for batch normalization.
@@ -652,8 +661,6 @@ norm_result_nrs <-
     nchannels = 3, 
     make_plot = FALSE
   )
-#> Warning in dir.create(output_data_path): '/Users/tkeyes/Desktop/cytofin_tests/
-#> normalization_nrs_results' already exists
 ```
 
 Just like `cytofin_normalize` above, `cytofin_normalize_nrs` has several
