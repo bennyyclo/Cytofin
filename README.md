@@ -613,23 +613,25 @@ cytofin_make_plots(
 
 #### Batch normalization using internal anchors (cytofin\_normalize\_nrs)
 
-![](./inst/images/image3.png)
-
 In the event that external anchors are not available, `CytofIn` can use
 “internal anchors” within each sample for batch normalization.
 Specifically, instead of defining a single external anchor for all the
 samples on a given plate like `cytofin_normalize`, the
 `cytofin_normalize_nrs` function identifies the most stable channels in
 the dataset overall and uses them as internal anchors that are used to
-batch normalize all other channels from sample-to-sample. To identify
-the most stable channels in the combined dataset, `CytofIn` uses a
-PCA-based non-redundancy score (NRS) as described before (see
-[here](https://pubmed.ncbi.nlm.nih.gov/26095251/)). A minimum of 3
-channels should be selected to establish an internal reference from
-which signals can be calibrated between CyTOF files.
+batch normalize all other channels from sample-to-sample. A schematic
+diagram of how `cytofin_normalize_nrs` works is provided below:
 
-To do so, `cytofin_normalize_nrs` takes several of the same arguments as
-`cytofin_normalize`, defined as above: `metadata_path`, `panel_path`,
+![](./inst/images/image3.png)
+
+In words, to identify the most stable channels in the combined dataset,
+`CytofIn` uses a PCA-based non-redundancy score (NRS) as described
+before (see [here](https://pubmed.ncbi.nlm.nih.gov/26095251/)). A
+minimum of 3 channels should be selected to establish an internal
+reference from which signals can be calibrated between CyTOF files.
+
+To do this, `cytofin_normalize_nrs` takes several of the same arguments
+as `cytofin_normalize`, defined as above: `metadata_path`, `panel_path`,
 `input_data_path`, `output_data_path`, `input_prefix`, `output_prefix`,
 `shift_factor`, and `scale_factor`. In addition, it takes the following
 optional arguments:
