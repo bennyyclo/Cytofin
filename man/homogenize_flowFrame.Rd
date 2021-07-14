@@ -13,11 +13,8 @@ homogenize_flowFrame(fcs_raw, ref_panel)
 cytofin analysis.}
 }
 \value{
-
+a homogenized flowFrame
 }
 \description{
 Alter a flowFrame to only include data from channels in a reference panel
-}
-\examples{
-TO DO: Insert examples
 }

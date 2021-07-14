@@ -23,7 +23,8 @@ This function reads a cytofin metadata file from a connection
 that points to a .csv or a .xlsx file
 }
 \examples{
+\dontrun{
 my_path <- file.path("~", "foo", "bar", "metadata.csv")
-my_metadata <- cytofin_read_metadata(my_path)
-
+my_metadata <- cytofin:::cytofin_read_metadata(my_path)
+}
 }

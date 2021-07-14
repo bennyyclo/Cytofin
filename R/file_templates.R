@@ -30,29 +30,34 @@ cytofin_generate_metadata_template <-
     file_name = "template_metadata.csv", 
     template_path = getwd()
   ) { 
-  
-  #create output data.frame
-  output_frame <- 
-    data.frame(
-      filename = c("file_1.fcs", "file_2.fcs", "file_3.fcs", "file_4.fcs"), 
-      cohort = c("cohort_1", "cohort_1", "cohort_2", "cohort_2"),
-      plate_number = c("plate_1", "plate_1", "plate_2", "plate_2"), 
-      patient_id = c("patient_1", "patient_2", "patient_a", "patient_b"), 
-      condition = c("basal", "basal", "stimulation_1", "stimulation_2"), 
-      is_anchor = c(0, 1, 0, 1), 
-      validation = 
-        paste0(
-          "validation_", 
-          c("file_1.fcs", "file_2.fcs", "file_3.fcs", "file_4.fcs")
-        )
+    
+    # create template_path if needed
+    if(!dir.exists(template_path)) { 
+      dir.create(template_path, showWarnings = FALSE, recursive = TRUE)
+    }
+    
+    #create output data.frame
+    output_frame <- 
+      data.frame(
+        filename = c("file_1.fcs", "file_2.fcs", "file_3.fcs", "file_4.fcs"), 
+        cohort = c("cohort_1", "cohort_1", "cohort_2", "cohort_2"),
+        plate_number = c("plate_1", "plate_1", "plate_2", "plate_2"), 
+        patient_id = c("patient_1", "patient_2", "patient_a", "patient_b"), 
+        condition = c("basal", "basal", "stimulation_1", "stimulation_2"), 
+        is_anchor = c(0, 1, 0, 1), 
+        validation = 
+          paste0(
+            "validation_", 
+            c("file_1.fcs", "file_2.fcs", "file_3.fcs", "file_4.fcs")
+          )
+      )
+    
+    readr::write_csv(
+      x = output_frame, 
+      file = file.path(template_path, file_name)
     )
-  
-  readr::write_csv(
-    x = output_frame, 
-    file = file.path(template_path, file_name)
-  )
-  
-}
+    
+  }
 
 
 #' Generate a template for a cytofin reference panel file
@@ -88,20 +93,25 @@ cytofin_generate_panel_template <-
     template_path = getwd()
   ) { 
     
-  # TO DO: Give a more compelling example of markers and their regex
-  #create output data.frame
-  output_frame <- 
-    data.frame(
-      metal_name = c("Time", "Event_length", "(Pd102)Di", "(Pd104)Di"), 
-      antigen_name = c("Time", "Event_length", "marker_name_1", "marker_name_2"),
-      lineage = c(0, 0, 1, 1), 
-      functional = c(0, 0, 0, 1), 
-      general = c(0, 1, 1, 1)
+    # create template_path if needed
+    if(!dir.exists(template_path)) { 
+      dir.create(template_path, showWarnings = FALSE, recursive = TRUE)
+    }
+    
+    #create output data.frame
+    output_frame <- 
+      data.frame(
+        metal_name = c("Time", "Event_length", "(Pd102)Di", "(Pd104)Di"), 
+        antigen_name = c("Time", "Event_length", "marker_name_1", "marker_name_2"),
+        antigen_pattern = c("", "", "", ""),
+        lineage = c(0, 0, 1, 1), 
+        functional = c(0, 0, 0, 1), 
+        general = c(0, 1, 1, 1)
+      )
+    
+    readr::write_csv(
+      x = output_frame, 
+      file = file.path(template_path, file_name)
     )
-  
-  readr::write_csv(
-    x = output_frame, 
-    file = file.path(template_path, file_name)
-  )
-  
-}
+    
+  }

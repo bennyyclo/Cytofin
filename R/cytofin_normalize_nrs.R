@@ -105,7 +105,7 @@ cytofin_normalize_nrs <-
   ) {
     
     # create output directory
-    dir.create(output_data_path)
+    dir.create(output_data_path, showWarnings = FALSE, recursive = TRUE)
   
     #read metadata table
     md <- cytofin_read_metadata(metadata_path)
@@ -127,7 +127,10 @@ cytofin_normalize_nrs <-
       y <- universal_mean[all_markers]
       z <- x
       m <- match(names(y), names(x))
-      z[m] <- z[m] - mean(mean_ctr[selected_markers]) + mean(universal_mean[selected_markers])
+      z[m] <- 
+        z[m] - 
+        mean(mean_ctr[selected_markers]) + 
+        mean(universal_mean[selected_markers])
       return(z)
     } # meanshift bulk
     
@@ -189,7 +192,6 @@ cytofin_normalize_nrs <-
       as.character(ref_panel$antigen_name[match((colnames(nrs_sample)), ref_panel$metal_name)])
     nrs <- colMeans(nrs_sample, na.rm = TRUE)
     
-    # ???
     nrs_sample <- data.frame(nrs_sample)
     markers_ord <- names(sort(nrs, decreasing = TRUE))
     nrs_sample <- data.frame(nrs_sample)
@@ -258,9 +260,8 @@ cytofin_normalize_nrs <-
       mean_ctr_mean <- mean(mean_ctr)
       var_ctr <- apply(expr_ctr, 2, var)
       var_ctr_mean <- mean(var_ctr)
-      # markername <- flowCore::pData(flowCore::parameters(fcs))$desc
-      
-      # normalize the control channels???
+
+      # batch normalize the .fcs channels
       expr_ctr_norm <- 
         t(apply(flowCore::exprs(fcs_asinh), 1, norm))
       

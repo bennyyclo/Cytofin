@@ -23,7 +23,8 @@ This function reads cytofin reference panel information from a connection
 that points to a .csv or a .xlsx file
 }
 \examples{
+\dontrun{
 my_path <- file.path("~", "foo", "bar", "panel.csv")
-my_metadata <- cytofin_read_panel_info(my_path)
-
+my_metadata <- cytofin:::cytofin_read_panel_info(my_path)
+}
 }
