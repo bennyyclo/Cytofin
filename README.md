@@ -410,17 +410,17 @@ calculations in future analyses.
 
 Specifically, `cytofin_prep_anchors` takes 4 required arguments:
 
--   `metadata_path`: A connection leading to an .xlsx or .csv file
+-   `metadata_path`: A directory leading to an .xlsx or .csv file
     containing a metadata table with information about each file to be
     analyzed. This file should be identical to that used for
     `cytofin_homogenize`.
--   `panel_path`: A connection leading to an .xlsx or .csv file
+-   `panel_path`: A directory leading to an .xlsx or .csv file
     containing information about the standardized antigen panel in the
     homogenized dataset. This file should be identical to that used for
     `cytofin_homogenize`.
--   `input_data_path`: A connection to a directory containing the input
+-   `input_data_path`: A directory containing the input
     .FCS files from which to draw summary statistics
--   `output_path`: A connection to a directory where the output .rds and
+-   `output_path`: A directory where the output .rds and
     .FCS files will be saved. The default is “none”, in which case no
     output files will be stored (and the only effect of the function
     will be to return the calculated statistics as a `list()`).
@@ -531,22 +531,22 @@ measurements on each plate based on how much each plate’s anchor differs
 from the other anchors. The `cytofin_normalize` function takes several
 required arguments:
 
--   `metadata_path`: A connection leading to an .xlsx or .csv file
+-   `metadata_path`: A directory leading to an .xlsx or .csv file
     containing a metadata table with information about each file to be
     analyzed. This file should be identical to that used for
     `cytofin_homogenize`.
--   `panel_path`: A connection leading to an .xlsx or .csv file
+-   `panel_path`: A directory leading to an .xlsx or .csv file
     containing information about the standardized antigen panel in the
     homogenized dataset. This file should be identical to that used for
     `cytofin_homogenize`.
 -   `anchor_statistics`: Either a list of numeric values produced by the
     `cytofin_prep_anchors` function or a connection leading to an .rds
     object containing anchor statistics.
--   `input_data_path`: A connection to a directory containing the input
+-   `input_data_path`: A directory containing the input
     .fcs files to be batch normalized. In most cases, this will be the
     directory to which the output .FCS files from `cytofin_homogenize`
     were written.
--   `output_data_path`: A connection to a directory where the output
+-   `output_data_path`: A directory where the output
     (i.e. batch normalized) .FCS files will be written.
 -   `mode`: A string indicating which transformation function should be
     used for batch normalization (“meanshift”, “meanshift\_bulk”,
