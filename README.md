@@ -353,7 +353,7 @@ than batch effects would be person-to-person variability. Thus, these
 samples are likely to be biologically similar to one another and are
 suitable to be chosen as external anchors. Alternatively, if a single
 patient or cell line was included on every CyTOF plate being integrated,
-the samples corresponding to that patient or cell line on each plate are
+the samples corresponding to that patient or cell line on each plate
 would also be suitable as external anchor choices.
 
 Once users have identified 1 external anchor per plate for `CytofIn`
