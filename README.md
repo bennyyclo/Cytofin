@@ -68,6 +68,14 @@ To install CytofIn, run the following code:
 library(devtools)
 install_github("bennyyclo/Cytofin")
 ```
+Please also ensure that the flowcore package is installed:
+
+``` r
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("flowCore")
+```
 
 To attach the CytofIn package to your current R session, run the
 following line:
